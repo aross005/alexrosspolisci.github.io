@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Alexander Ross - Research</title>
+<title>Alexander Ross – cheat_sheet</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -90,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">CV</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./projects.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="./projects.html" rel="" target="">
  <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
@@ -134,56 +168,168 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content column-page" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Research</h1>
-</div>
 
 
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-</header>
-
-<section id="publications" class="level2">
-<h2 class="anchored" data-anchor-id="publications">Publications</h2>
-<p><strong>Strategic Considerations and Support for Direct Democracy in the United States</strong> With Daniel R. Biggers. <em>Electoral Studies</em>, 2023. <a href="https://doi.org/10.1016/j.electstud.2023.102716">[DOI]</a></p>
+<section id="website-update-cheat-sheet" class="level1">
+<h1>Website Update Cheat Sheet</h1>
+<section id="the-basic-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="the-basic-workflow">The Basic Workflow</h2>
+<p>Every update follows this pattern:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Users/alexanderross/Desktop/website</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Make your edits (see below)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Render the site</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Push to GitHub</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Brief description of change"</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Changes go live within 1-2 minutes.</p>
 <hr>
 </section>
-<section id="current-project" class="level2">
-<h2 class="anchored" data-anchor-id="current-project">Current Project</h2>
-<section id="pasi-programme-daccompagnement-et-de-soutien-à-lintégration" class="level3">
-<h3 class="anchored" data-anchor-id="pasi-programme-daccompagnement-et-de-soutien-à-lintégration">PASI (Programme d’accompagnement et de soutien à l’intégration)</h3>
-<p>I am currently working at Université Laval on a project analyzing a novel panel dataset on recent immigrants to Quebec. This project, funded by MIFI (Quebec’s immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.</p>
-<p>This is the first panel dataset on political attitudes composed exclusively of recently arrived immigrants in Canada or the US.</p>
+<section id="common-tasks" class="level2">
+<h2 class="anchored" data-anchor-id="common-tasks">Common Tasks</h2>
+<section id="update-your-cv" class="level3">
+<h3 class="anchored" data-anchor-id="update-your-cv">Update Your CV</h3>
+<ol type="1">
+<li>Update your CV and save as <code>Alex_CV.pdf</code></li>
+<li>Copy it to <code>files/Alex_CV.pdf</code> (replace the old one)</li>
+<li>Run the workflow above</li>
+</ol>
+<hr>
+</section>
+<section id="add-a-new-publication" class="level3">
+<h3 class="anchored" data-anchor-id="add-a-new-publication">Add a New Publication</h3>
+<ol type="1">
+<li>Open <code>projects.qmd</code> in any text editor</li>
+<li>Add under the <code>## Publications</code> section:</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>**Paper Title Here**</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>With Coauthor Name. *Journal Name*, Year.</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>[<span class="co">[</span><span class="ot">DOI</span><span class="co">]</span>](https://doi.org/xxxxx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li>Save and run the workflow above</li>
+</ol>
+<hr>
+</section>
+<section id="add-a-new-working-paper" class="level3">
+<h3 class="anchored" data-anchor-id="add-a-new-working-paper">Add a New Working Paper</h3>
+<ol type="1">
+<li>Open <code>projects.qmd</code></li>
+<li>Add under <code>## Working Papers &amp; Conference Presentations</code>:</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>**Paper Title Here**</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>With Coauthor Name</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>*Presented at APSA 2025*</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li>Save and run the workflow</li>
+</ol>
+<hr>
+</section>
+<section id="update-your-bio" class="level3">
+<h3 class="anchored" data-anchor-id="update-your-bio">Update Your Bio</h3>
+<ol type="1">
+<li>Open <code>index.qmd</code></li>
+<li>Edit the text between <code>:::{#hero-heading}</code> and <code>:::</code></li>
+<li>Save and run the workflow</li>
+</ol>
+<hr>
+</section>
+<section id="update-contact-info" class="level3">
+<h3 class="anchored" data-anchor-id="update-contact-info">Update Contact Info</h3>
+<ol type="1">
+<li>Open <code>contact.qmd</code></li>
+<li>Edit as needed</li>
+<li>Save and run the workflow</li>
+</ol>
+<hr>
+</section>
+<section id="update-your-headshot" class="level3">
+<h3 class="anchored" data-anchor-id="update-your-headshot">Update Your Headshot</h3>
+<ol type="1">
+<li>Save new photo as <code>headshot.jpeg</code></li>
+<li>Copy to <code>images/headshot.jpeg</code> (replace old one)</li>
+<li>Run the workflow</li>
+</ol>
 <hr>
 </section>
 </section>
-<section id="working-papers-conference-presentations" class="level2">
-<h2 class="anchored" data-anchor-id="working-papers-conference-presentations">Working Papers &amp; Conference Presentations</h2>
-<p><strong>Deserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors</strong> <em>Presented at APSA 2023 | Currently under review</em></p>
+<section id="preview-before-publishing" class="level2">
+<h2 class="anchored" data-anchor-id="preview-before-publishing">Preview Before Publishing</h2>
+<p>To see changes locally before pushing:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Users/alexanderross/Desktop/website</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Opens at http://localhost:4000 (or similar). Press Ctrl+C to stop.</p>
 <hr>
-<p><strong>Participating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs’ Use and Impacts</strong> With Valérie-Anne Mahéo and Thomas Gareau-Paquette <em>Presented at CPSA 2025</em></p>
+</section>
+<section id="quick-reference" class="level2">
+<h2 class="anchored" data-anchor-id="quick-reference">Quick Reference</h2>
+<table class="table">
+<thead>
+<tr class="header">
+<th>File</th>
+<th>What It Controls</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>index.qmd</code></td>
+<td>Homepage, bio, education</td>
+</tr>
+<tr class="even">
+<td><code>projects.qmd</code></td>
+<td>Publications &amp; research</td>
+</tr>
+<tr class="odd">
+<td><code>cv.qmd</code></td>
+<td>CV page (embeds PDF)</td>
+</tr>
+<tr class="even">
+<td><code>contact.qmd</code></td>
+<td>Contact info</td>
+</tr>
+<tr class="odd">
+<td><code>files/Alex_CV.pdf</code></td>
+<td>Your CV PDF</td>
+</tr>
+<tr class="even">
+<td><code>images/headshot.jpeg</code></td>
+<td>Your photo</td>
+</tr>
+<tr class="odd">
+<td><code>_quarto.yml</code></td>
+<td>Nav bar, site title, footer</td>
+</tr>
+<tr class="even">
+<td><code>custom.scss</code></td>
+<td>Colors, fonts, styling</td>
+</tr>
+</tbody>
+</table>
 <hr>
-<p><strong>Yelp Stars and Partisan Stripes: Evidence of Affective Polarization in Online Business Reviews</strong> With Adam Hobbs and Loren Collingwood <em>Forthcoming at MPSA 2026</em></p>
+</section>
+<section id="if-something-goes-wrong" class="level2">
+<h2 class="anchored" data-anchor-id="if-something-goes-wrong">If Something Goes Wrong</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See what changed</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Undo all uncommitted changes</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout .</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># See recent commits</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--oneline</span> <span class="at">-5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <hr>
-<p><strong>Housing Shocks and Redistributive Preferences</strong> With Adam Hobbs <em>Presented at MPSA 2024 &amp; APSA 2025</em></p>
-<hr>
-<p><strong>Owed Gratitude? The Impact of Attempted Debt Cancelation on Attitudes and Behaviors</strong> <em>Presented at APSA 2024</em></p>
-<hr>
-<p><strong>Debtors and Democracy: The Impact of Federal Student Loan Debt on Participation and Attitudes among Debtors</strong> <em>Presented at MPSA 2023</em></p>
-<hr>
-<p><strong>Voting and Proactive Social Norm Compliance</strong> With Daniel R. Biggers <em>Presented at APSA 2023</em></p>
-<hr>
-<p><strong>Dropbox Proximity and Voting Propensity</strong> With Loren Collingwood and Benjamin Gonzalez O’Brien</p>
+</section>
+<section id="useful-links" class="level2">
+<h2 class="anchored" data-anchor-id="useful-links">Useful Links</h2>
+<ul>
+<li><strong>Your site:</strong> https://alexrosspolisci.com</li>
+<li><strong>GitHub repo:</strong> https://github.com/aross005/alexrosspolisci.github.io</li>
+<li><strong>GitHub Pages settings:</strong> https://github.com/aross005/alexrosspolisci.github.io/settings/pages</li>
+<li><strong>Quarto docs:</strong> https://quarto.org/docs/websites/</li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

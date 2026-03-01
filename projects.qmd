@@ -14,7 +14,7 @@ With Daniel R. Biggers. *Electoral Studies*, 2023.
 
 ### PASI (Programme d'accompagnement et de soutien à l'intégration)
 
-I am currently working with Prof. Valérie-Anne Mahéo at Université Laval on a project analyzing a novel panel dataset on recent immigrants to Quebec. This project, funded by MIFI (Quebec's immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.
+I am currently working at Université Laval on a project analyzing a novel panel dataset on recent immigrants to Quebec. This project, funded by MIFI (Quebec's immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.
 
 This is the first panel dataset on political attitudes composed exclusively of recently arrived immigrants in Canada or the US.
 
