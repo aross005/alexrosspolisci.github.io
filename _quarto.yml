@@ -1,0 +1,40 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Alexander Ross"
+  description: "Political Scientist | Postdoctoral Researcher"
+  navbar:
+    background: dark
+    foreground: light
+    left:
+      - href: index.qmd
+        text: Home
+      - href: cv.qmd
+        text: CV
+      - href: projects.qmd
+        text: Research
+      - href: contact.qmd
+        text: Contact
+    right:
+      - icon: envelope
+        href: mailto:alexander-frederick.ross.1@ulaval.ca
+      - icon: twitter
+        href: https://twitter.com/aross005
+      - icon: github
+        href: https://github.com/aross005
+      - icon: linkedin
+        href: https://www.linkedin.com/in/alexander-ross-bb9360158/
+
+  page-footer:
+    center: |
+      &copy; 2024 Alexander Ross
+
+format:
+  html:
+    theme:
+      light: [cosmo, custom.scss]
+    css: custom.css
+    toc: false
+    page-layout: full

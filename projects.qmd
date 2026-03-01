@@ -1,0 +1,65 @@
+---
+title: "Research"
+---
+
+## Publications
+
+**Strategic Considerations and Support for Direct Democracy in the United States**
+With Daniel R. Biggers. *Electoral Studies*, 2023.
+[[DOI]](https://doi.org/10.1016/j.electstud.2023.102716)
+
+---
+
+## Current Project
+
+### PASI (Programme d'accompagnement et de soutien à l'intégration)
+
+I am currently working with Prof. Valérie-Anne Mahéo at Université Laval on a project analyzing a novel panel dataset on recent immigrants to Quebec. This project, funded by MIFI (Quebec's immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.
+
+This is the first panel dataset on political attitudes composed exclusively of recently arrived immigrants in Canada or the US.
+
+---
+
+## Working Papers & Conference Presentations
+
+**Deserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors**
+*Presented at APSA 2023 | Currently under review*
+
+---
+
+**Participating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs' Use and Impacts**
+With Valérie-Anne Mahéo and Thomas Gareau-Paquette
+*Presented at CPSA 2025*
+
+---
+
+**Yelp Stars and Partisan Stripes: Evidence of Affective Polarization in Online Business Reviews**
+With Adam Hobbs and Loren Collingwood
+*Forthcoming at MPSA 2026*
+
+---
+
+**Housing Shocks and Redistributive Preferences**
+With Adam Hobbs
+*Presented at MPSA 2024 & APSA 2025*
+
+---
+
+**Owed Gratitude? The Impact of Attempted Debt Cancelation on Attitudes and Behaviors**
+*Presented at APSA 2024*
+
+---
+
+**Debtors and Democracy: The Impact of Federal Student Loan Debt on Participation and Attitudes among Debtors**
+*Presented at MPSA 2023*
+
+---
+
+**Voting and Proactive Social Norm Compliance**
+With Daniel R. Biggers
+*Presented at APSA 2023*
+
+---
+
+**Dropbox Proximity and Voting Propensity**
+With Loren Collingwood and Benjamin Gonzalez O'Brien

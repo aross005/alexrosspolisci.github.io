@@ -1,0 +1,78 @@
+/*-- scss:defaults --*/
+
+// Colors - Professional academic palette
+$primary: #2c3e50;
+$secondary: #34495e;
+$link-color: #2980b9;
+$body-bg: #ffffff;
+$body-color: #333333;
+
+// Typography
+$font-family-sans-serif: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+$headings-font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+$font-size-base: 1.05rem;
+$headings-font-weight: 600;
+
+// Navbar
+$navbar-bg: $primary;
+$navbar-fg: #ffffff;
+
+/*-- scss:rules --*/
+
+// Import Google Font
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+// Smooth transitions
+a {
+  transition: color 0.2s ease;
+}
+
+// Navbar styling
+.navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+// Hero section on homepage
+#hero-heading {
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+// About template image
+.about-entity img {
+  border: 4px solid $primary;
+}
+
+// Section headings
+h2 {
+  border-bottom: 2px solid $primary;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+// Card-like sections
+.quarto-about-trestles {
+  .about-contents {
+    padding: 1.5rem;
+  }
+}
+
+// Footer
+.nav-footer {
+  background-color: $primary;
+  color: #ffffff;
+  padding: 1.5rem 0;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  #hero-heading {
+    text-align: center;
+  }
+}

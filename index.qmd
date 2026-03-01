@@ -1,0 +1,50 @@
+---
+title: "Alexander Ross"
+subtitle: "Political Scientist"
+image: images/headshot.jpeg
+toc: false
+about:
+  id: hero-heading
+  template: trestles
+  image-shape: round
+  image-width: 15em
+  links:
+    - icon: envelope
+      text: Email
+      href: mailto:alexander-frederick.ross.1@ulaval.ca
+    - icon: file-earmark-text
+      text: CV
+      href: cv.qmd
+    - icon: mortarboard
+      text: Google Scholar
+      href: https://scholar.google.com/citations?user=n7m5UVcAAAAJ&hl=en
+---
+
+:::{#hero-heading}
+
+I am a postdoctoral researcher at Université Laval. I received my PhD in Political Science from UC Riverside in 2024.
+
+My research focuses on **the politics of personal debt**, specifically student loan debt, and how debt impacts the political attitudes and behaviors of individuals.
+
+Prior to my doctoral studies, I earned a Master's in Public Policy. I have also taught English in Beijing and served with AmeriCorps.
+
+:::
+
+## Research Interests
+
+- Political behavior and public opinion
+- Politics of personal debt and student loans
+- Economic inequality and political participation
+- American politics
+
+## Education
+
+**PhD in Political Science** | University of California, Riverside | 2024
+
+**Master of Public Policy** | University of California, Riverside | 2017
+
+**BA in Political Science** | University of California, Riverside | 2013
+
+## News
+
+*Check back for updates on recent publications, conference presentations, and other academic news.*
