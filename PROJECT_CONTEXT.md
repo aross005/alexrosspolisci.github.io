@@ -36,6 +36,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 │   └── Alex_CV.pdf      # CV PDF
 ├── docs/                # Rendered site (deployed to GitHub Pages)
 ├── CNAME                # Custom domain file
+├── CHEAT_SHEET.md       # Quick reference for updates
 └── README.md            # Deployment instructions
 ```
 
@@ -50,6 +51,15 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 
 ---
 
+## Current Site Content
+- **Bio:** Postdoctoral researcher at Université Laval, PhD from UC Riverside 2024
+- **Research interests:** Personal debt, political behavior, American politics
+- **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
+- **Current project:** PASI (immigrant integration panel study at Université Laval)
+- **Working papers:** 8 papers listed with co-authors and conference presentations
+
+---
+
 ## What to Edit for Common Updates
 
 | Task | File to Edit |
@@ -60,6 +70,22 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 | Update contact info | `contact.qmd` |
 | Change site styling | `custom.scss` or `custom.css` |
 | Change nav/footer | `_quarto.yml` |
+
+---
+
+## Update Workflow
+```bash
+cd /Users/alexanderross/Desktop/website
+# 1. Edit .qmd files
+# 2. Render
+quarto render
+# 3. Stage, commit, push
+git add .
+git commit -m "Description of changes"
+git push
+```
+
+See `CHEAT_SHEET.md` for detailed instructions.
 
 ---
 

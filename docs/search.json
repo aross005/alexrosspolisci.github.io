@@ -60,7 +60,7 @@
     "href": "PROJECT_CONTEXT.html",
     "title": "Project Context: Academic Website for Alexander Ross",
     "section": "",
-    "text": "Personal academic website built with Quarto, deployed to GitHub Pages.\n\n\n\nLive URL: https://alexrosspolisci.com\n\n\n\n\n\nQuarto website built\nContent migrated from WordPress\nHeadshot and CV PDF added\nPushed to GitHub: https://github.com/aross005/alexrosspolisci.github.io\nGitHub Pages enabled (main branch, /docs folder)\nCustom domain connected (DNS via WordPress.com)\nHTTPS enabled\n\n\n\n\n\n/Users/alexanderross/Desktop/website/\n├── _quarto.yml          # Site config (nav, theme, footer)\n├── index.qmd            # Homepage with bio\n├── cv.qmd               # Embeds CV PDF\n├── projects.qmd         # Research & publications\n├── contact.qmd          # Contact info\n├── custom.scss          # Theme styling\n├── custom.css           # Additional CSS\n├── images/\n│   └── headshot.jpeg    # Professional photo\n├── files/\n│   └── Alex_CV.pdf      # CV PDF\n├── docs/                # Rendered site (deployed to GitHub Pages)\n├── CNAME                # Custom domain file\n└── README.md            # Deployment instructions\n\n\n\n\n\nGitHub username: aross005\nGitHub repo: alexrosspolisci.github.io\nDomain registrar: WordPress.com\nLive domain: alexrosspolisci.com\nQuarto version: 1.3.450\n\n\n\n\n\n\n\n\nTask\nFile to Edit\n\n\n\n\nUpdate bio/intro\nindex.qmd\n\n\nUpdate CV\nReplace files/Alex_CV.pdf\n\n\nAdd publication/paper\nprojects.qmd\n\n\nUpdate contact info\ncontact.qmd\n\n\nChange site styling\ncustom.scss or custom.css\n\n\nChange nav/footer\n_quarto.yml\n\n\n\n\n\n\n\n\nEmail (preferred): alex.frederick.ross@gmail.com\nUniversité Laval: alexander-frederick.ross.1@ulaval.ca\nTwitter: @aross005\nGitHub: aross005\nGoogle Scholar: https://scholar.google.com/citations?user=n7m5UVcAAAAJ&hl=en"
+    "text": "Personal academic website built with Quarto, deployed to GitHub Pages.\n\n\n\nLive URL: https://alexrosspolisci.com\n\n\n\n\n\nQuarto website built\nContent migrated from WordPress\nHeadshot and CV PDF added\nPushed to GitHub: https://github.com/aross005/alexrosspolisci.github.io\nGitHub Pages enabled (main branch, /docs folder)\nCustom domain connected (DNS via WordPress.com)\nHTTPS enabled\n\n\n\n\n\n/Users/alexanderross/Desktop/website/\n├── _quarto.yml          # Site config (nav, theme, footer)\n├── index.qmd            # Homepage with bio\n├── cv.qmd               # Embeds CV PDF\n├── projects.qmd         # Research & publications\n├── contact.qmd          # Contact info\n├── custom.scss          # Theme styling\n├── custom.css           # Additional CSS\n├── images/\n│   └── headshot.jpeg    # Professional photo\n├── files/\n│   └── Alex_CV.pdf      # CV PDF\n├── docs/                # Rendered site (deployed to GitHub Pages)\n├── CNAME                # Custom domain file\n├── CHEAT_SHEET.md       # Quick reference for updates\n└── README.md            # Deployment instructions\n\n\n\n\n\nGitHub username: aross005\nGitHub repo: alexrosspolisci.github.io\nDomain registrar: WordPress.com\nLive domain: alexrosspolisci.com\nQuarto version: 1.3.450\n\n\n\n\n\n\nBio: Postdoctoral researcher at Université Laval, PhD from UC Riverside 2024\nResearch interests: Personal debt, political behavior, American politics\nPublication: “Strategic Considerations and Support for Direct Democracy” in Electoral Studies\nCurrent project: PASI (immigrant integration panel study at Université Laval)\nWorking papers: 8 papers listed with co-authors and conference presentations\n\n\n\n\n\n\n\n\nTask\nFile to Edit\n\n\n\n\nUpdate bio/intro\nindex.qmd\n\n\nUpdate CV\nReplace files/Alex_CV.pdf\n\n\nAdd publication/paper\nprojects.qmd\n\n\nUpdate contact info\ncontact.qmd\n\n\nChange site styling\ncustom.scss or custom.css\n\n\nChange nav/footer\n_quarto.yml\n\n\n\n\n\n\n\ncd /Users/alexanderross/Desktop/website\n# 1. Edit .qmd files\n# 2. Render\nquarto render\n# 3. Stage, commit, push\ngit add .\ngit commit -m \"Description of changes\"\ngit push\nSee CHEAT_SHEET.md for detailed instructions.\n\n\n\n\n\nEmail (preferred): alex.frederick.ross@gmail.com\nUniversité Laval: alexander-frederick.ross.1@ulaval.ca\nTwitter: @aross005\nGitHub: aross005\nGoogle Scholar: https://scholar.google.com/citations?user=n7m5UVcAAAAJ&hl=en"
   },
   {
     "objectID": "PROJECT_CONTEXT.html#overview",
@@ -88,7 +88,7 @@
     "href": "PROJECT_CONTEXT.html#file-structure",
     "title": "Project Context: Academic Website for Alexander Ross",
     "section": "",
-    "text": "/Users/alexanderross/Desktop/website/\n├── _quarto.yml          # Site config (nav, theme, footer)\n├── index.qmd            # Homepage with bio\n├── cv.qmd               # Embeds CV PDF\n├── projects.qmd         # Research & publications\n├── contact.qmd          # Contact info\n├── custom.scss          # Theme styling\n├── custom.css           # Additional CSS\n├── images/\n│   └── headshot.jpeg    # Professional photo\n├── files/\n│   └── Alex_CV.pdf      # CV PDF\n├── docs/                # Rendered site (deployed to GitHub Pages)\n├── CNAME                # Custom domain file\n└── README.md            # Deployment instructions"
+    "text": "/Users/alexanderross/Desktop/website/\n├── _quarto.yml          # Site config (nav, theme, footer)\n├── index.qmd            # Homepage with bio\n├── cv.qmd               # Embeds CV PDF\n├── projects.qmd         # Research & publications\n├── contact.qmd          # Contact info\n├── custom.scss          # Theme styling\n├── custom.css           # Additional CSS\n├── images/\n│   └── headshot.jpeg    # Professional photo\n├── files/\n│   └── Alex_CV.pdf      # CV PDF\n├── docs/                # Rendered site (deployed to GitHub Pages)\n├── CNAME                # Custom domain file\n├── CHEAT_SHEET.md       # Quick reference for updates\n└── README.md            # Deployment instructions"
   },
   {
     "objectID": "PROJECT_CONTEXT.html#key-info",
@@ -98,11 +98,25 @@
     "text": "GitHub username: aross005\nGitHub repo: alexrosspolisci.github.io\nDomain registrar: WordPress.com\nLive domain: alexrosspolisci.com\nQuarto version: 1.3.450"
   },
   {
+    "objectID": "PROJECT_CONTEXT.html#current-site-content",
+    "href": "PROJECT_CONTEXT.html#current-site-content",
+    "title": "Project Context: Academic Website for Alexander Ross",
+    "section": "",
+    "text": "Bio: Postdoctoral researcher at Université Laval, PhD from UC Riverside 2024\nResearch interests: Personal debt, political behavior, American politics\nPublication: “Strategic Considerations and Support for Direct Democracy” in Electoral Studies\nCurrent project: PASI (immigrant integration panel study at Université Laval)\nWorking papers: 8 papers listed with co-authors and conference presentations"
+  },
+  {
     "objectID": "PROJECT_CONTEXT.html#what-to-edit-for-common-updates",
     "href": "PROJECT_CONTEXT.html#what-to-edit-for-common-updates",
     "title": "Project Context: Academic Website for Alexander Ross",
     "section": "",
     "text": "Task\nFile to Edit\n\n\n\n\nUpdate bio/intro\nindex.qmd\n\n\nUpdate CV\nReplace files/Alex_CV.pdf\n\n\nAdd publication/paper\nprojects.qmd\n\n\nUpdate contact info\ncontact.qmd\n\n\nChange site styling\ncustom.scss or custom.css\n\n\nChange nav/footer\n_quarto.yml"
+  },
+  {
+    "objectID": "PROJECT_CONTEXT.html#update-workflow",
+    "href": "PROJECT_CONTEXT.html#update-workflow",
+    "title": "Project Context: Academic Website for Alexander Ross",
+    "section": "",
+    "text": "cd /Users/alexanderross/Desktop/website\n# 1. Edit .qmd files\n# 2. Render\nquarto render\n# 3. Stage, commit, push\ngit add .\ngit commit -m \"Description of changes\"\ngit push\nSee CHEAT_SHEET.md for detailed instructions."
   },
   {
     "objectID": "PROJECT_CONTEXT.html#contact-info-for-reference",
