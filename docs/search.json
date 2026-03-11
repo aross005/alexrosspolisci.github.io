@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "cv.html",
-    "href": "cv.html",
-    "title": "Curriculum Vitae",
-    "section": "",
-    "text": "Download CV (PDF)"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Alexander Ross",
@@ -35,95 +28,53 @@
     "text": "News\nCheck back for updates on recent publications, conference presentations, and other academic news."
   },
   {
-    "objectID": "contact.html",
-    "href": "contact.html",
-    "title": "Contact",
-    "section": "",
-    "text": "The best way to reach me is via my personal email."
+    "objectID": "index.html#publications",
+    "href": "index.html#publications",
+    "title": "Resume",
+    "section": "Publications",
+    "text": "Publications\nStrategic Considerations and Support for Direct Democracy in the United States With Daniel R. Biggers. Electoral Studies, 2023. [DOI]"
   },
   {
-    "objectID": "contact.html#email",
-    "href": "contact.html#email",
-    "title": "Contact",
+    "objectID": "index.html#current-project",
+    "href": "index.html#current-project",
+    "title": "Resume",
+    "section": "Current Project",
+    "text": "Current Project\n\nPASI (Programme d’accompagnement et de soutien à l’intégration)\nI am currently working at Université Laval on a project analyzing a novel panel dataset on recent immigrants to Quebec. This project, funded by MIFI (Quebec’s immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.\nThis is the first panel dataset on political attitudes composed exclusively of recently arrived immigrants in Canada or the US."
+  },
+  {
+    "objectID": "index.html#working-papers-conference-presentations",
+    "href": "index.html#working-papers-conference-presentations",
+    "title": "Resume",
+    "section": "Working Papers & Conference Presentations",
+    "text": "Working Papers & Conference Presentations\nDeserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors Presented at APSA 2023 | Currently under review\n\nParticipating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs’ Use and Impacts With Valérie-Anne Mahéo and Thomas Gareau-Paquette Presented at CPSA 2025\n\nYelp Stars and Partisan Stripes: Evidence of Affective Polarization in Online Business Reviews With Adam Hobbs and Loren Collingwood Forthcoming at MPSA 2026\n\nHousing Shocks and Redistributive Preferences With Adam Hobbs Presented at MPSA 2024 & APSA 2025\n\nOwed Gratitude? The Impact of Attempted Debt Cancelation on Attitudes and Behaviors Presented at APSA 2024\n\nDebtors and Democracy: The Impact of Federal Student Loan Debt on Participation and Attitudes among Debtors Presented at MPSA 2023\n\nVoting and Proactive Social Norm Compliance With Daniel R. Biggers Presented at APSA 2023\n\nDropbox Proximity and Voting Propensity With Loren Collingwood and Benjamin Gonzalez O’Brien\nThe best way to reach me is via my personal email."
+  },
+  {
+    "objectID": "index.html#email",
+    "href": "index.html#email",
+    "title": "Resume",
     "section": "Email",
     "text": "Email\n\nalex.frederick.ross@gmail.com (preferred)\nalexander-frederick.ross.1@ulaval.ca (Université Laval)\naross005@ucr.edu (UC Riverside)"
   },
   {
-    "objectID": "contact.html#connect",
-    "href": "contact.html#connect",
-    "title": "Contact",
+    "objectID": "index.html#connect",
+    "href": "index.html#connect",
+    "title": "Resume",
     "section": "Connect",
-    "text": "Connect\n\nGoogle Scholar\nTwitter/X\nGitHub\nLinkedIn"
+    "text": "Connect\n\nGoogle Scholar\nTwitter/X\nGitHub\nLinkedIn\n\nDownload Resume (PDF)"
   },
   {
-    "objectID": "PROJECT_CONTEXT.html",
-    "href": "PROJECT_CONTEXT.html",
-    "title": "Project Context: Academic Website for Alexander Ross",
+    "objectID": "cv.html",
+    "href": "cv.html",
+    "title": "Curriculum Vitae",
     "section": "",
-    "text": "Personal academic website built with Quarto, deployed to GitHub Pages.\n\n\n\nLive URL: https://alexrosspolisci.com\n\n\n\n\n\nQuarto website built\nContent migrated from WordPress\nHeadshot and CV PDF added\nPushed to GitHub: https://github.com/aross005/alexrosspolisci.github.io\nGitHub Pages enabled (main branch, /docs folder)\nCustom domain connected (DNS via WordPress.com)\nHTTPS enabled\n\n\n\n\n\n/Users/alexanderross/Desktop/website/\n├── _quarto.yml          # Site config (nav, theme, footer)\n├── index.qmd            # Homepage with bio\n├── cv.qmd               # Embeds CV PDF\n├── projects.qmd         # Research & publications\n├── contact.qmd          # Contact info\n├── custom.scss          # Theme styling\n├── custom.css           # Additional CSS\n├── images/\n│   └── headshot.jpeg    # Professional photo\n├── files/\n│   └── Alex_CV.pdf      # CV PDF\n├── docs/                # Rendered site (deployed to GitHub Pages)\n├── CNAME                # Custom domain file\n├── CHEAT_SHEET.md       # Quick reference for updates\n└── README.md            # Deployment instructions\n\n\n\n\n\nGitHub username: aross005\nGitHub repo: alexrosspolisci.github.io\nDomain registrar: WordPress.com\nLive domain: alexrosspolisci.com\nQuarto version: 1.3.450\n\n\n\n\n\n\nBio: Postdoctoral researcher at Université Laval, PhD from UC Riverside 2024\nResearch interests: Personal debt, political behavior, American politics\nPublication: “Strategic Considerations and Support for Direct Democracy” in Electoral Studies\nCurrent project: PASI (immigrant integration panel study at Université Laval)\nWorking papers: 8 papers listed with co-authors and conference presentations\n\n\n\n\n\n\n\n\nTask\nFile to Edit\n\n\n\n\nUpdate bio/intro\nindex.qmd\n\n\nUpdate CV\nReplace files/Alex_CV.pdf\n\n\nAdd publication/paper\nprojects.qmd\n\n\nUpdate contact info\ncontact.qmd\n\n\nChange site styling\ncustom.scss or custom.css\n\n\nChange nav/footer\n_quarto.yml\n\n\n\n\n\n\n\ncd /Users/alexanderross/Desktop/website\n# 1. Edit .qmd files\n# 2. Render\nquarto render\n# 3. Stage, commit, push\ngit add .\ngit commit -m \"Description of changes\"\ngit push\nSee CHEAT_SHEET.md for detailed instructions.\n\n\n\n\n\nEmail (preferred): alex.frederick.ross@gmail.com\nUniversité Laval: alexander-frederick.ross.1@ulaval.ca\nTwitter: @aross005\nGitHub: aross005\nGoogle Scholar: https://scholar.google.com/citations?user=n7m5UVcAAAAJ&hl=en"
+    "text": "This is my academic CV. Professional resume available upon request.\nDownload CV (PDF)"
   },
   {
-    "objectID": "PROJECT_CONTEXT.html#overview",
-    "href": "PROJECT_CONTEXT.html#overview",
-    "title": "Project Context: Academic Website for Alexander Ross",
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "Resume",
     "section": "",
-    "text": "Personal academic website built with Quarto, deployed to GitHub Pages."
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#status-complete-and-live",
-    "href": "PROJECT_CONTEXT.html#status-complete-and-live",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "Live URL: https://alexrosspolisci.com"
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#completed-setup",
-    "href": "PROJECT_CONTEXT.html#completed-setup",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "Quarto website built\nContent migrated from WordPress\nHeadshot and CV PDF added\nPushed to GitHub: https://github.com/aross005/alexrosspolisci.github.io\nGitHub Pages enabled (main branch, /docs folder)\nCustom domain connected (DNS via WordPress.com)\nHTTPS enabled"
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#file-structure",
-    "href": "PROJECT_CONTEXT.html#file-structure",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "/Users/alexanderross/Desktop/website/\n├── _quarto.yml          # Site config (nav, theme, footer)\n├── index.qmd            # Homepage with bio\n├── cv.qmd               # Embeds CV PDF\n├── projects.qmd         # Research & publications\n├── contact.qmd          # Contact info\n├── custom.scss          # Theme styling\n├── custom.css           # Additional CSS\n├── images/\n│   └── headshot.jpeg    # Professional photo\n├── files/\n│   └── Alex_CV.pdf      # CV PDF\n├── docs/                # Rendered site (deployed to GitHub Pages)\n├── CNAME                # Custom domain file\n├── CHEAT_SHEET.md       # Quick reference for updates\n└── README.md            # Deployment instructions"
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#key-info",
-    "href": "PROJECT_CONTEXT.html#key-info",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "GitHub username: aross005\nGitHub repo: alexrosspolisci.github.io\nDomain registrar: WordPress.com\nLive domain: alexrosspolisci.com\nQuarto version: 1.3.450"
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#current-site-content",
-    "href": "PROJECT_CONTEXT.html#current-site-content",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "Bio: Postdoctoral researcher at Université Laval, PhD from UC Riverside 2024\nResearch interests: Personal debt, political behavior, American politics\nPublication: “Strategic Considerations and Support for Direct Democracy” in Electoral Studies\nCurrent project: PASI (immigrant integration panel study at Université Laval)\nWorking papers: 8 papers listed with co-authors and conference presentations"
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#what-to-edit-for-common-updates",
-    "href": "PROJECT_CONTEXT.html#what-to-edit-for-common-updates",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "Task\nFile to Edit\n\n\n\n\nUpdate bio/intro\nindex.qmd\n\n\nUpdate CV\nReplace files/Alex_CV.pdf\n\n\nAdd publication/paper\nprojects.qmd\n\n\nUpdate contact info\ncontact.qmd\n\n\nChange site styling\ncustom.scss or custom.css\n\n\nChange nav/footer\n_quarto.yml"
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#update-workflow",
-    "href": "PROJECT_CONTEXT.html#update-workflow",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "cd /Users/alexanderross/Desktop/website\n# 1. Edit .qmd files\n# 2. Render\nquarto render\n# 3. Stage, commit, push\ngit add .\ngit commit -m \"Description of changes\"\ngit push\nSee CHEAT_SHEET.md for detailed instructions."
-  },
-  {
-    "objectID": "PROJECT_CONTEXT.html#contact-info-for-reference",
-    "href": "PROJECT_CONTEXT.html#contact-info-for-reference",
-    "title": "Project Context: Academic Website for Alexander Ross",
-    "section": "",
-    "text": "Email (preferred): alex.frederick.ross@gmail.com\nUniversité Laval: alexander-frederick.ross.1@ulaval.ca\nTwitter: @aross005\nGitHub: aross005\nGoogle Scholar: https://scholar.google.com/citations?user=n7m5UVcAAAAJ&hl=en"
+    "text": "Download Resume (PDF)"
   },
   {
     "objectID": "projects.html",
@@ -154,52 +105,24 @@
     "text": "Working Papers & Conference Presentations\nDeserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors Presented at APSA 2023 | Currently under review\n\nParticipating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs’ Use and Impacts With Valérie-Anne Mahéo and Thomas Gareau-Paquette Presented at CPSA 2025\n\nYelp Stars and Partisan Stripes: Evidence of Affective Polarization in Online Business Reviews With Adam Hobbs and Loren Collingwood Forthcoming at MPSA 2026\n\nHousing Shocks and Redistributive Preferences With Adam Hobbs Presented at MPSA 2024 & APSA 2025\n\nOwed Gratitude? The Impact of Attempted Debt Cancelation on Attitudes and Behaviors Presented at APSA 2024\n\nDebtors and Democracy: The Impact of Federal Student Loan Debt on Participation and Attitudes among Debtors Presented at MPSA 2023\n\nVoting and Proactive Social Norm Compliance With Daniel R. Biggers Presented at APSA 2023\n\nDropbox Proximity and Voting Propensity With Loren Collingwood and Benjamin Gonzalez O’Brien"
   },
   {
-    "objectID": "CHEAT_SHEET.html",
-    "href": "CHEAT_SHEET.html",
-    "title": "Website Update Cheat Sheet",
+    "objectID": "contact.html",
+    "href": "contact.html",
+    "title": "Contact",
     "section": "",
-    "text": "Every update follows this pattern:\ncd /Users/alexanderross/Desktop/website\n# 1. Make your edits (see below)\n# 2. Render the site\nquarto render\n# 3. Push to GitHub\ngit add .\ngit commit -m \"Brief description of change\"\ngit push\nChanges go live within 1-2 minutes.\n\n\n\n\n\n\n\nUpdate your CV and save as Alex_CV.pdf\nCopy it to files/Alex_CV.pdf (replace the old one)\nRun the workflow above\n\n\n\n\n\n\nOpen projects.qmd in any text editor\nAdd under the ## Publications section:\n\n**Paper Title Here**\nWith Coauthor Name. *Journal Name*, Year.\n[[DOI]](https://doi.org/xxxxx)\n\nSave and run the workflow above\n\n\n\n\n\n\nOpen projects.qmd\nAdd under ## Working Papers & Conference Presentations:\n\n**Paper Title Here**\nWith Coauthor Name\n*Presented at APSA 2025*\n\nSave and run the workflow\n\n\n\n\n\n\nOpen index.qmd\nEdit the text between :::{#hero-heading} and :::\nSave and run the workflow\n\n\n\n\n\n\nOpen contact.qmd\nEdit as needed\nSave and run the workflow\n\n\n\n\n\n\nSave new photo as headshot.jpeg\nCopy to images/headshot.jpeg (replace old one)\nRun the workflow\n\n\n\n\n\n\nTo see changes locally before pushing:\ncd /Users/alexanderross/Desktop/website\nquarto preview\nOpens at http://localhost:4000 (or similar). Press Ctrl+C to stop.\n\n\n\n\n\n\n\nFile\nWhat It Controls\n\n\n\n\nindex.qmd\nHomepage, bio, education\n\n\nprojects.qmd\nPublications & research\n\n\ncv.qmd\nCV page (embeds PDF)\n\n\ncontact.qmd\nContact info\n\n\nfiles/Alex_CV.pdf\nYour CV PDF\n\n\nimages/headshot.jpeg\nYour photo\n\n\n_quarto.yml\nNav bar, site title, footer\n\n\ncustom.scss\nColors, fonts, styling\n\n\n\n\n\n\n\n# See what changed\ngit status\n\n# Undo all uncommitted changes\ngit checkout .\n\n# See recent commits\ngit log --oneline -5\n\n\n\n\n\nYour site: https://alexrosspolisci.com\nGitHub repo: https://github.com/aross005/alexrosspolisci.github.io\nGitHub Pages settings: https://github.com/aross005/alexrosspolisci.github.io/settings/pages\nQuarto docs: https://quarto.org/docs/websites/"
+    "text": "The best way to reach me is via my personal email."
   },
   {
-    "objectID": "CHEAT_SHEET.html#the-basic-workflow",
-    "href": "CHEAT_SHEET.html#the-basic-workflow",
-    "title": "Website Update Cheat Sheet",
-    "section": "",
-    "text": "Every update follows this pattern:\ncd /Users/alexanderross/Desktop/website\n# 1. Make your edits (see below)\n# 2. Render the site\nquarto render\n# 3. Push to GitHub\ngit add .\ngit commit -m \"Brief description of change\"\ngit push\nChanges go live within 1-2 minutes."
+    "objectID": "contact.html#email",
+    "href": "contact.html#email",
+    "title": "Contact",
+    "section": "Email",
+    "text": "Email\n\nalex.frederick.ross@gmail.com (preferred)\nalexander-frederick.ross.1@ulaval.ca (Université Laval)\naross005@ucr.edu (UC Riverside)"
   },
   {
-    "objectID": "CHEAT_SHEET.html#common-tasks",
-    "href": "CHEAT_SHEET.html#common-tasks",
-    "title": "Website Update Cheat Sheet",
-    "section": "",
-    "text": "Update your CV and save as Alex_CV.pdf\nCopy it to files/Alex_CV.pdf (replace the old one)\nRun the workflow above\n\n\n\n\n\n\nOpen projects.qmd in any text editor\nAdd under the ## Publications section:\n\n**Paper Title Here**\nWith Coauthor Name. *Journal Name*, Year.\n[[DOI]](https://doi.org/xxxxx)\n\nSave and run the workflow above\n\n\n\n\n\n\nOpen projects.qmd\nAdd under ## Working Papers & Conference Presentations:\n\n**Paper Title Here**\nWith Coauthor Name\n*Presented at APSA 2025*\n\nSave and run the workflow\n\n\n\n\n\n\nOpen index.qmd\nEdit the text between :::{#hero-heading} and :::\nSave and run the workflow\n\n\n\n\n\n\nOpen contact.qmd\nEdit as needed\nSave and run the workflow\n\n\n\n\n\n\nSave new photo as headshot.jpeg\nCopy to images/headshot.jpeg (replace old one)\nRun the workflow"
-  },
-  {
-    "objectID": "CHEAT_SHEET.html#preview-before-publishing",
-    "href": "CHEAT_SHEET.html#preview-before-publishing",
-    "title": "Website Update Cheat Sheet",
-    "section": "",
-    "text": "To see changes locally before pushing:\ncd /Users/alexanderross/Desktop/website\nquarto preview\nOpens at http://localhost:4000 (or similar). Press Ctrl+C to stop."
-  },
-  {
-    "objectID": "CHEAT_SHEET.html#quick-reference",
-    "href": "CHEAT_SHEET.html#quick-reference",
-    "title": "Website Update Cheat Sheet",
-    "section": "",
-    "text": "File\nWhat It Controls\n\n\n\n\nindex.qmd\nHomepage, bio, education\n\n\nprojects.qmd\nPublications & research\n\n\ncv.qmd\nCV page (embeds PDF)\n\n\ncontact.qmd\nContact info\n\n\nfiles/Alex_CV.pdf\nYour CV PDF\n\n\nimages/headshot.jpeg\nYour photo\n\n\n_quarto.yml\nNav bar, site title, footer\n\n\ncustom.scss\nColors, fonts, styling"
-  },
-  {
-    "objectID": "CHEAT_SHEET.html#if-something-goes-wrong",
-    "href": "CHEAT_SHEET.html#if-something-goes-wrong",
-    "title": "Website Update Cheat Sheet",
-    "section": "",
-    "text": "# See what changed\ngit status\n\n# Undo all uncommitted changes\ngit checkout .\n\n# See recent commits\ngit log --oneline -5"
-  },
-  {
-    "objectID": "CHEAT_SHEET.html#useful-links",
-    "href": "CHEAT_SHEET.html#useful-links",
-    "title": "Website Update Cheat Sheet",
-    "section": "",
-    "text": "Your site: https://alexrosspolisci.com\nGitHub repo: https://github.com/aross005/alexrosspolisci.github.io\nGitHub Pages settings: https://github.com/aross005/alexrosspolisci.github.io/settings/pages\nQuarto docs: https://quarto.org/docs/websites/"
+    "objectID": "contact.html#connect",
+    "href": "contact.html#connect",
+    "title": "Contact",
+    "section": "Connect",
+    "text": "Connect\n\nGoogle Scholar\nTwitter/X\nGitHub\nLinkedIn"
   }
 ]

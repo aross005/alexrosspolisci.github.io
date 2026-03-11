@@ -1,0 +1,10 @@
+---
+title: "Resume"
+robots: noindex
+---
+
+[Download Resume (PDF)](files/Alex_Ross_Resume.pdf){.btn .btn-primary}
+
+```{=html}
+<iframe src="files/Alex_Ross_Resume.pdf" width="100%" height="900px" style="border: 1px solid #ddd; margin-top: 1rem;"></iframe>
+```

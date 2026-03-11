@@ -2,6 +2,8 @@
 title: "Curriculum Vitae"
 ---
 
+*This is my academic CV. Professional resume available upon request.*
+
 [Download CV (PDF)](files/Alex_CV.pdf){.btn .btn-primary}
 
 ```{=html}
