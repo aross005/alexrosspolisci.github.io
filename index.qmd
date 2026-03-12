@@ -35,6 +35,7 @@ Before grad school, I served with AmeriCorps in South-Central Los Angeles and br
 - Personal debt and political behavior (American)
 - Immigration and immigrant political attitudes (American and comparative)
 - Political behavior (comparative)
+- Inequality
 - Text as data and survey methodology
 
 ## Education
