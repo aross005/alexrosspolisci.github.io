@@ -23,17 +23,19 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 ## File Structure
 ```
 /Users/alexanderross/Desktop/website/
-├── _quarto.yml          # Site config (nav, theme, footer)
+├── _quarto.yml          # Site config (nav, theme, footer, render list)
 ├── index.qmd            # Homepage with bio
-├── cv.qmd               # Embeds CV PDF
+├── cv.qmd               # Embeds CV PDF (academic)
+├── resume.qmd           # Embeds resume PDF (unlisted, noindex)
 ├── projects.qmd         # Research & publications
 ├── contact.qmd          # Contact info
-├── custom.scss          # Theme styling
+├── custom.scss          # Theme styling (colors, navbar, sections)
 ├── custom.css           # Additional CSS
 ├── images/
 │   └── headshot.jpeg    # Professional photo
 ├── files/
-│   └── Alex_CV.pdf      # CV PDF
+│   ├── Alex_CV.pdf      # Academic CV PDF
+│   └── Alex_Ross_Resume.pdf  # Professional resume PDF
 ├── docs/                # Rendered site (deployed to GitHub Pages)
 ├── CNAME                # Custom domain file
 ├── CHEAT_SHEET.md       # Quick reference for updates
@@ -48,12 +50,19 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 - **Domain registrar:** WordPress.com
 - **Live domain:** alexrosspolisci.com
 - **Quarto version:** 1.3.450
+- **Theme:** Journal (Bootswatch)
+- **Unlisted resume:** alexrosspolisci.com/resume.html (not linked, has noindex)
 
 ---
 
 ## Current Site Content
-- **Bio:** Postdoctoral researcher at Université Laval, PhD from UC Riverside 2024
-- **Research interests:** Personal debt, political behavior, American politics
+- **Bio:** Postdoctoral researcher at Université Laval working on PASI immigrant integration study. PhD from UC Riverside 2024 (dissertation on politics of student loan debt). MPP from UC Riverside School of Public Policy. AmeriCorps alum (South-Central LA), taught English in Beijing.
+- **Research interests:**
+  - Personal debt and political behavior (American)
+  - Immigration and immigrant political attitudes (American and comparative)
+  - Political behavior (comparative)
+  - Inequality
+  - Text as data and survey methodology
 - **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
 - **Current project:** PASI (immigrant integration panel study at Université Laval)
 - **Working papers:** 8 papers listed with co-authors and conference presentations
@@ -66,10 +75,12 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 |------|--------------|
 | Update bio/intro | `index.qmd` |
 | Update CV | Replace `files/Alex_CV.pdf` |
+| Update resume | Replace `files/Alex_Ross_Resume.pdf` |
 | Add publication/paper | `projects.qmd` |
 | Update contact info | `contact.qmd` |
 | Change site styling | `custom.scss` or `custom.css` |
 | Change nav/footer | `_quarto.yml` |
+| Change theme | `_quarto.yml` (format > html > theme) |
 
 ---
 
