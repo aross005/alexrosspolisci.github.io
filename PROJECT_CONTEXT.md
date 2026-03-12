@@ -96,6 +96,8 @@ git commit -m "Description of changes"
 git push
 ```
 
+**Note:** `_quarto.yml` has a render list that only includes the main site pages (index, cv, resume, projects, contact). The Projects folder is excluded from rendering.
+
 See `CHEAT_SHEET.md` for detailed instructions.
 
 ---
