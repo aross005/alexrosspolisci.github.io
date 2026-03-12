@@ -1,6 +1,12 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - index.qmd
+    - cv.qmd
+    - projects.qmd
+    - contact.qmd
+    - resume.qmd
 
 website:
   title: "Alexander Ross"

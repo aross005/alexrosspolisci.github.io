@@ -7,9 +7,7 @@ $link-color: #2980b9;
 $body-bg: #ffffff;
 $body-color: #333333;
 
-// Typography
-$font-family-sans-serif: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
-$headings-font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+// Typography - let Journal theme handle fonts
 $font-size-base: 1.05rem;
 $headings-font-weight: 600;
 
@@ -18,9 +16,6 @@ $navbar-bg: $primary;
 $navbar-fg: #ffffff;
 
 /*-- scss:rules --*/
-
-// Import Google Font
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
 
 // Smooth transitions
 a {
