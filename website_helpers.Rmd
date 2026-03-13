@@ -1,0 +1,498 @@
+---
+title: "Website Update Helpers"
+author: "Alexander Ross"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+
+# Set the path to your website directory
+# Change this if you move the website folder
+WEBSITE_DIR <- "/Users/alexanderross/Desktop/website"
+```
+
+# Overview
+
+This document contains helper functions for updating your academic website. The website is built with Quarto and deployed to GitHub Pages at [alexrosspolisci.com](https://alexrosspolisci.com).
+
+**Key files:**
+
+- `index.qmd` - Homepage with bio
+- `cv.qmd` - CV page (embeds PDF)
+- `resume.qmd` - Resume page (unlisted, accessible at /resume.html)
+- `projects.qmd` - Research & publications
+- `files/Alex_CV.pdf` - Your CV PDF
+- `files/Alex_Ross_Resume.pdf` - Your resume PDF
+
+---
+
+# Setup
+
+First, run this chunk to load the helper functions into your R session:
+
+```{r load-helpers}
+# ============================================================================
+# WEBSITE UPDATE HELPER FUNCTIONS
+# ============================================================================
+# These functions help you update your academic website from R.
+# The website uses Quarto and is deployed via GitHub Pages.
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# CONFIGURATION
+# ----------------------------------------------------------------------------
+
+# Path to your website directory
+# Update this if you move the website folder to a different location
+WEBSITE_DIR <- "/Users/alexanderross/Desktop/website"
+
+# ----------------------------------------------------------------------------
+# FUNCTION: update_cv
+# ----------------------------------------------------------------------------
+# Purpose: Replace your CV PDF with a new version
+#
+# How it works:
+#   1. Copies the new PDF file to the website's files/ directory
+#   2. Renames it to "Alex_CV.pdf" (the expected filename)
+#   3. The cv.qmd page embeds this PDF, so no other changes needed
+#
+# Arguments:
+#   new_cv_path - The full path to your new CV PDF file
+#                 Example: "~/Downloads/CV_March_2026.pdf"
+#
+# Returns: TRUE if successful, FALSE otherwise
+# ----------------------------------------------------------------------------
+update_cv <- function(new_cv_path) {
+
+  # Check that the source file exists
+  if (!file.exists(new_cv_path)) {
+    # File not found - print error and return FALSE
+    message("Error: File not found at: ", new_cv_path)
+    return(FALSE)
+  }
+
+  # Check that it's a PDF file
+  if (!grepl("\\.pdf$", tolower(new_cv_path))) {
+    # Not a PDF - print warning but continue anyway
+    message("Warning: File does not appear to be a PDF. Continuing anyway...")
+  }
+
+  # Define the destination path
+  # The CV must be named "Alex_CV.pdf" for the website to find it
+  dest_path <- file.path(WEBSITE_DIR, "files", "Alex_CV.pdf")
+
+  # Copy the file, overwriting the existing CV
+  # file.copy returns TRUE on success, FALSE on failure
+  success <- file.copy(
+    from = new_cv_path,      # Source: your new CV
+    to = dest_path,           # Destination: website files folder
+    overwrite = TRUE          # Replace the existing file
+  )
+
+  # Report the result
+  if (success) {
+    message("CV updated successfully!")
+    message("New CV copied to: ", dest_path)
+    message("Run render_site() and then push_changes() to publish.")
+  } else {
+    message("Error: Failed to copy file.")
+  }
+
+
+  return(success)
+}
+
+# ----------------------------------------------------------------------------
+# FUNCTION: update_resume
+# ----------------------------------------------------------------------------
+# Purpose: Replace your resume PDF with a new version
+#
+# How it works:
+#   1. Copies the new PDF file to the website's files/ directory
+#   2. Renames it to "Alex_Ross_Resume.pdf" (the expected filename)
+#   3. The resume.qmd page embeds this PDF
+#
+# Note: The resume page is unlisted (not in navigation) and has noindex
+#       so search engines won't index it. Access it directly at:
+#       https://alexrosspolisci.com/resume.html
+#
+# Arguments:
+#   new_resume_path - The full path to your new resume PDF file
+#
+# Returns: TRUE if successful, FALSE otherwise
+# ----------------------------------------------------------------------------
+update_resume <- function(new_resume_path) {
+
+  # Check that the source file exists
+  if (!file.exists(new_resume_path)) {
+    message("Error: File not found at: ", new_resume_path)
+    return(FALSE)
+  }
+
+  # Define the destination path
+  dest_path <- file.path(WEBSITE_DIR, "files", "Alex_Ross_Resume.pdf")
+
+
+  # Copy the file, overwriting the existing resume
+  success <- file.copy(
+    from = new_resume_path,
+    to = dest_path,
+    overwrite = TRUE
+  )
+
+  if (success) {
+    message("Resume updated successfully!")
+    message("New resume copied to: ", dest_path)
+    message("Run render_site() and then push_changes() to publish.")
+  } else {
+    message("Error: Failed to copy file.")
+  }
+
+  return(success)
+}
+
+# ----------------------------------------------------------------------------
+# FUNCTION: render_site
+# ----------------------------------------------------------------------------
+# Purpose: Render the Quarto website to generate HTML files
+#
+# How it works:
+#   1. Changes to the website directory
+#   2. Runs "quarto render" which processes all .qmd files
+#   3. Outputs HTML files to the docs/ folder
+#   4. The docs/ folder is what GitHub Pages serves
+#
+# Note: The _quarto.yml file has a render list that only includes:
+#       index.qmd, cv.qmd, resume.qmd, projects.qmd, contact.qmd
+#       This prevents the Projects/ folder from being rendered.
+#
+# Arguments: None
+#
+# Returns: The exit code from quarto (0 = success)
+# ----------------------------------------------------------------------------
+render_site <- function() {
+
+  message("Rendering website...")
+
+  # Store the current working directory so we can return to it later
+  original_dir <- getwd()
+
+  # Change to the website directory
+  # Quarto needs to run from the project root to find _quarto.yml
+  setwd(WEBSITE_DIR)
+
+  # Run the quarto render command
+  # system() executes a shell command and returns its exit code
+  # Exit code 0 means success, anything else is an error
+  result <- system("quarto render")
+
+  # Return to the original directory
+  setwd(original_dir)
+
+  # Report the result
+
+  if (result == 0) {
+    message("Site rendered successfully!")
+    message("Run push_changes() to publish, or preview_site() to preview locally.")
+  } else {
+    message("Error: Quarto render failed with exit code ", result)
+  }
+
+  return(result)
+}
+
+# ----------------------------------------------------------------------------
+# FUNCTION: preview_site
+# ----------------------------------------------------------------------------
+# Purpose: Open a local preview of the rendered website
+#
+# How it works:
+#   1. Opens the docs/index.html file in your default browser
+#   2. This shows what the site will look like when published
+#
+# Note: This opens the local files, not the live site. To see the live
+#       site after pushing, use open_live_site().
+#
+# Arguments: None
+#
+# Returns: Nothing (opens browser as side effect)
+# ----------------------------------------------------------------------------
+preview_site <- function() {
+
+  # Construct the path to the rendered index.html
+  index_path <- file.path(WEBSITE_DIR, "docs", "index.html")
+
+  # Check that the file exists (site has been rendered)
+  if (!file.exists(index_path)) {
+    message("Error: docs/index.html not found. Run render_site() first.")
+    return(invisible(NULL))
+  }
+
+  message("Opening local preview...")
+
+  # browseURL opens a URL or file path in the default browser
+  browseURL(index_path)
+}
+
+# ----------------------------------------------------------------------------
+# FUNCTION: open_live_site
+# ----------------------------------------------------------------------------
+# Purpose: Open the live website in your browser
+#
+# How it works:
+#   Opens https://alexrosspolisci.com in your default browser
+#
+# Arguments: None
+#
+# Returns: Nothing (opens browser as side effect)
+# ----------------------------------------------------------------------------
+open_live_site <- function() {
+  message("Opening live site...")
+  browseURL("https://alexrosspolisci.com")
+}
+
+# ----------------------------------------------------------------------------
+# FUNCTION: git_status
+# ----------------------------------------------------------------------------
+# Purpose: Show the current git status of the website repository
+#
+# How it works:
+#   1. Changes to the website directory
+#   2. Runs "git status" to show modified/untracked files
+#   3. Helps you see what changes will be committed
+#
+# Arguments: None
+#
+# Returns: Nothing (prints status to console)
+# ----------------------------------------------------------------------------
+git_status <- function() {
+
+  original_dir <- getwd()
+  setwd(WEBSITE_DIR)
+
+  # Run git status
+  # intern = TRUE captures the output as a character vector
+  status <- system("git status", intern = TRUE)
+
+  setwd(original_dir)
+
+  # Print each line of the status output
+  cat(status, sep = "\n")
+}
+
+# ----------------------------------------------------------------------------
+# FUNCTION: push_changes
+# ----------------------------------------------------------------------------
+# Purpose: Commit and push all changes to GitHub
+#
+# How it works:
+#   1. Changes to the website directory
+#   2. Stages all changes with "git add ."
+#   3. Creates a commit with your message
+#   4. Pushes to GitHub
+#   5. GitHub Pages automatically deploys the new version
+#
+# Arguments:
+#   message - A short description of what you changed
+#             Example: "Update CV with new publication"
+#
+# Returns: The exit code from git push (0 = success)
+# ----------------------------------------------------------------------------
+push_changes <- function(message = "Update website") {
+
+  message("Pushing changes to GitHub...")
+
+  original_dir <- getwd()
+  setwd(WEBSITE_DIR)
+
+  # Stage all changes
+  # "git add ." adds all modified and new files in the directory
+  system("git add .")
+
+  # Create a commit with the provided message
+  # shQuote() safely escapes the message for the shell
+  commit_cmd <- paste0('git commit -m ', shQuote(message))
+  commit_result <- system(commit_cmd)
+
+  # Check if commit succeeded
+  if (commit_result != 0) {
+    message("Note: Nothing to commit, or commit failed.")
+    setwd(original_dir)
+    return(commit_result)
+  }
+
+  # Push to GitHub
+  push_result <- system("git push")
+
+  setwd(original_dir)
+
+  if (push_result == 0) {
+    message("Changes pushed successfully!")
+    message("Site will update at https://alexrosspolisci.com in 1-2 minutes.")
+  } else {
+    message("Error: Push failed with exit code ", push_result)
+  }
+
+  return(push_result)
+}
+
+# ----------------------------------------------------------------------------
+# FUNCTION: quick_cv_update
+# ----------------------------------------------------------------------------
+# Purpose: All-in-one function to update CV and publish
+#
+# How it works:
+#   1. Copies your new CV to the website
+#   2. Renders the site
+#   3. Commits and pushes to GitHub
+#   4. Opens the live site so you can verify
+#
+# This is the easiest way to update your CV - just one function call!
+#
+# Arguments:
+#   new_cv_path - The full path to your new CV PDF file
+#
+# Returns: TRUE if all steps succeeded, FALSE otherwise
+# ----------------------------------------------------------------------------
+quick_cv_update <- function(new_cv_path) {
+
+  message("=== Quick CV Update ===\n")
+
+  # Step 1: Update the CV file
+  message("Step 1/4: Copying new CV...")
+  if (!update_cv(new_cv_path)) {
+    return(FALSE)
+  }
+
+  # Step 2: Render the site
+  message("\nStep 2/4: Rendering site...")
+  if (render_site() != 0) {
+    return(FALSE)
+  }
+
+  # Step 3: Push to GitHub
+  message("\nStep 3/4: Pushing to GitHub...")
+  if (push_changes("Update CV") != 0) {
+    return(FALSE)
+  }
+
+  # Step 4: Open the live site
+  message("\nStep 4/4: Opening live site...")
+  Sys.sleep(2)
+  # Brief pause before opening browser
+  open_live_site()
+
+ message("\n=== CV Update Complete! ===")
+  message("The site will update in 1-2 minutes. Refresh to see changes.")
+
+  return(TRUE)
+}
+
+# Print a message confirming functions are loaded
+message("Website helper functions loaded!")
+message("Available functions:")
+message("  - update_cv(path)        : Replace CV PDF")
+message("  - update_resume(path)    : Replace resume PDF")
+message("
+  - render_site()          : Render the Quarto site")
+message("  - preview_site()         : Preview locally")
+message("  - open_live_site()       : Open live website")
+message("  - git_status()           : Show git status")
+message("  - push_changes(msg)      : Commit and push")
+message("  - quick_cv_update(path)  : Update CV in one step")
+```
+
+---
+
+# Usage Examples
+
+## Update Your CV (Quick Method)
+
+The easiest way to update your CV is with `quick_cv_update()`. This does everything in one step:
+
+```{r example-quick-cv}
+# Replace with the actual path to your new CV
+quick_cv_update("~/Downloads/My_New_CV.pdf")
+```
+
+## Update Your CV (Step by Step)
+
+If you prefer more control, you can do each step separately:
+
+```{r example-cv-steps}
+# Step 1: Copy the new CV to the website
+update_cv("~/Downloads/My_New_CV.pdf")
+
+# Step 2: Render the site to generate new HTML
+render_site()
+
+# Step 3: Preview locally to make sure it looks right
+preview_site()
+
+# Step 4: Push to GitHub to publish
+push_changes("Update CV - March 2026")
+
+# Step 5: Open the live site to verify
+open_live_site()
+```
+
+## Update Your Resume
+
+The resume works the same way as the CV:
+```{r example-resume}
+# Update the resume PDF
+update_resume("~/Downloads/My_New_Resume.pdf")
+
+# Render and push
+render_site()
+push_changes("Update resume")
+```
+
+## Check Status Before Pushing
+
+You can check what files have changed before pushing:
+
+```{r example-status}
+# See what files have been modified
+git_status()
+```
+
+---
+
+# Troubleshooting
+
+## "Command not found: quarto"
+
+If you get this error, Quarto isn't in your PATH. You may need to:
+
+1. Install Quarto from [quarto.org](https://quarto.org/docs/get-started/)
+2. Or specify the full path to quarto in the `render_site()` function
+
+## "Nothing to commit"
+
+This means you haven't made any changes since the last commit. This is fine - it just means there's nothing new to push.
+
+## Site not updating after push
+
+GitHub Pages can take 1-2 minutes to rebuild. Try:
+
+1. Wait a minute and refresh
+2. Hard refresh with Cmd+Shift+R to clear cache
+3. Check the GitHub Actions tab in your repo for build status
+
+---
+
+# Reference
+
+| Function | Purpose |
+|----------|---------|
+| `update_cv(path)` | Copy new CV PDF to website |
+| `update_resume(path)` | Copy new resume PDF to website |
+| `render_site()` | Render Quarto site to HTML |
+| `preview_site()` | Open local preview in browser |
+| `open_live_site()` | Open live site in browser |
+| `git_status()` | Show git status |
+| `push_changes(message)` | Commit and push to GitHub |
+| `quick_cv_update(path)` | All-in-one CV update |
