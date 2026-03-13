@@ -39,8 +39,7 @@ website:
 
 format:
   html:
-    theme:
-      dark: [solar, custom.scss]
+    theme: [solar, custom.scss]
     css: custom.css
     toc: false
     page-layout: full
