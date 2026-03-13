@@ -13,3 +13,8 @@
 .DS_Store
 Thumbs.db
 .positai
+
+# Local files (not for repo)
+Projects/
+website_helpers.Rmd
+Screenshot*.png
