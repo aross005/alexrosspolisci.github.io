@@ -31,6 +31,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 ├── contact.qmd          # Contact info
 ├── custom.scss          # Theme styling (colors, navbar, sections)
 ├── custom.css           # Additional CSS
+├── website_helpers.Rmd  # R helper functions for updating site
 ├── images/
 │   └── headshot.jpeg    # Professional photo
 ├── files/
@@ -99,6 +100,28 @@ git push
 **Note:** `_quarto.yml` has a render list that only includes the main site pages (index, cv, resume, projects, contact). The Projects folder is excluded from rendering.
 
 See `CHEAT_SHEET.md` for detailed instructions.
+
+---
+
+## R Helper Functions
+
+The `website_helpers.Rmd` file contains R functions for updating the site. Open it in RStudio and run the setup chunk to load the functions.
+
+| Function | Purpose |
+|----------|---------|
+| `update_cv(path)` | Copy new CV PDF to website |
+| `update_resume(path)` | Copy new resume PDF to website |
+| `render_site()` | Render Quarto site to HTML |
+| `preview_site()` | Open local preview in browser |
+| `open_live_site()` | Open live site in browser |
+| `git_status()` | Show git status |
+| `push_changes(message)` | Commit and push to GitHub |
+| `quick_cv_update(path)` | All-in-one CV update |
+
+**Quick CV update from R:**
+```r
+quick_cv_update("~/Downloads/My_New_CV.pdf")
+```
 
 ---
 
