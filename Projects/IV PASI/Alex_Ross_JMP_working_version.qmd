@@ -1,0 +1,1921 @@
+---
+title: "Deserving Debtors? The determinants of support for student debt cancelation"
+author: "Alex Ross^[Postdoctoral Researcher, Université Laval alexander-frederick.ross1@ulaval.ca]"
+
+date: last-modified
+date-format: "D MMMM, YYYY"
+format:
+  pdf:
+    documentclass: article
+    fig-cap-location: bottom
+    toc: false
+    number-sections: false
+    fontsize: 12pt
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \usepackage{setspace}
+        \doublespacing
+crossref:
+  fig-title: "Figure"
+  fig-prefix: "Figure"
+  labels: alpha
+bibliography: references2.bib
+zotero: true
+abstract: |
+  The US is unique for its high levels of student loan debt. In recent years, US student debtors have increasingly called for governmental assistance, yet we know little about how the US public thinks about student debtors compared to other groups. In this paper, I develop two survey experiments with informational treatments about student debtors. I find that both the socioeconomic and racial characteristics of debtors affects public attitudes about debtors and debt cancelation. Most notably, subjects are more sympathetic toward first-gen student debtors, and Republican subjects, specifically, are more willing to support debt relief for white debtors.
+---
+
+\newpage
+
+```{r setup, include=FALSE}
+
+#set this to yes if knitting to word. some of the tables won't show up
+#wordoc <- "yes"
+
+#doctype <- ifelse(wordoc == "yes", FALSE, TRUE)
+
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,error = FALSE,message = FALSE)
+
+rm(list=ls())
+pacman::p_load(tidyverse,dplyr,tidyr,haven,cregg,ggthemes,hrbrthemes,kableExtra,extrafont,knitr,kableExtra,naniar,modelsummary,ggplot2,tinytable)
+
+#it should be opened in a project, long file path is because was testing something
+Alex_experiment <- read_dta("~/Desktop/Grad School/debt_conjoint 2/Alex_experiment.dta")
+
+
+#
+```
+
+```{r}
+#custome theme for plots
+
+# Define a color-blind friendly and grayscale-friendly color palette
+cb_palette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
+theme_cb_bw <- function(...) {
+  theme_minimal() +
+    theme(
+      text = element_text(family = "Arial"),
+      panel.grid.major = element_line(color = "gray80", linetype = "dashed"),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      axis.title = element_text(face = "bold"),
+      legend.title = element_text(face = "bold"),
+      legend.background = element_rect(fill = "transparent", color = NA),
+      plot.caption = element_text(hjust = 1, face = "italic"),
+      ...
+    )
+}
+
+
+
+
+# Define a custom function to create ggplot objects with desired settings
+custom_plot <- function(data) {
+  # Use theme_ft_rc() for the theme
+  # Use geom_line(size=5) to set line size to 5
+  # Use theme(legend.position = "none") to remove the legend
+  # Use scale_color_manual() to set custom colors for scale_color_manual
+  p <- plot(data) +
+    geom_line(size = 5) +
+    scale_color_few()+
+    #scale_color_manual(name = NULL, values = c("#FFE98F", "#00A99D", "#EE6055", "#A7ACD9", "#FFA07A")) +
+    theme_tufte() + 
+    theme(legend.position = "none")
+
+  
+  return(p)
+}
+
+#fucntion for plotting MMs
+plot_mm <- function(df,f1){
+  model <- mm(df, f1, id = ~ID) 
+  
+  p <- plot(model)+geom_line(size = 5) +
+    theme_tufte() +  scale_color_few() +
+
+    theme(legend.position = "none")
+return(p)  
+}
+
+
+
+```
+
+```{r}
+conjoint <- Alex_experiment %>% 
+  #filtering out people who failed attention screeners
+  filter(pass_attention_screen1==1 | pass_attention_screen2==1) %>% 
+  mutate(
+    #dvs for if debtors are responsible
+    #recoding so higher number means more sympathetic to debtors
+    debtors_not_responsible= E3_debt_respon,
+    
+    debt_cancel=(7-E3_debt_cancel),
+    
+    #controls/demographic
+    dem_to_rep=pid7cat,
+    
+    college_grads=case_when(education%in% c(4,5,6)~1,TRUE~0),
+    
+    no_college= case_when(college_grads==0~1,TRUE~0),
+    
+    #factor variable for subgroup analysis
+    
+    Partisan=as.factor(case_when(Democrat==1~"Democrat",
+                       Republican==1~"Republican",
+                       Independent==1|Other_PID==1~"Other/Indepdent")),
+    
+        Race=as.factor(case_when(race==1~"White",
+                       race!=1~"Non-white",
+                       )),
+
+    
+
+    
+    #treatments
+    
+    treat_biden=as.factor(case_when(cancel_treat1_noBiden==1~"Biden Cancel",cancel_treat1_noBiden==0~"Just Cancelled")),
+    
+    treat_school=as.factor(case_when(cancel_treat2_GradSchool==1~"First Gen",cancel_treat2_GradSchool==0~"Grad School")),
+    
+    treat_finish=as.factor(case_when(cancel_treat3_NoFinish==1~"Finished",cancel_treat3_NoFinish==0~"Didn't Finish")),
+    
+    treat_race=as.factor(case_when(cancel_treat4_White==1~"More likely to be White",cancel_treat4_White==0~"Less Likely to be white")),
+    
+    treat_working=as.factor(case_when(cancel_treat5_Working==1~"Working",cancel_treat4_White==0~"Non-Working")),
+    
+  
+    
+
+  #creg needs an ID variable
+  ID=row_number()
+  )
+
+cancel_caption <- "DV:Support for cancelling student, Higher values = More support"
+
+responsibility_caption <- "DV:Do debtors bear responsibility for their debt, Higer values = Less responsible"
+
+
+responsibility_formula <- debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working
+
+#ggsave("mm_resp_whole_sample.pdf")
+cancel_formula <- debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working
+```
+
+```{r}
+#function for making nice tables
+nice_table <- function(df){
+  
+  df2 <- df %>% 
+    #removing columns that don't make sense
+    select(-outcome,-statistic,-feature) %>%
+    #removing blank rows
+    filter(estimate!=0) %>% 
+    #creating Better labels
+    mutate(Characteristic=case_when(
+      level=="Just Cancelled"~"Neutral framing of cancelation (relative to partisan)",
+      level=="Grad School"~"Grad School (relative to First Gen student)",
+      level=="Finished"~"Finished Degree (relative to uncompleted)",
+      level=="More likely to be White"~"Majority white (relative to majority non-white)",
+      level=="Working"~"Working (relative to unemployed)",
+      TRUE~NA
+    )) %>% select(-level) %>% 
+    #reordering so that the characteristic column is there
+    select(Characteristic,everything())
+    
+    return(df2)
+    
+
+}
+
+```
+
+```{r}
+
+#takes two outputs of amce function that are put together with rbind
+modelplot_multi <- function(bound_tables,subset=FALSE,mm=FALSE){
+
+
+
+  df <- bound_tables %>%
+    #remocing uneeded rows
+    select(-statistic,-feature) %>%J
+    #removing blank rows
+    filter(estimate!=0) %>% 
+    #creating Better labels
+    mutate(
+      
+      Characteristic = case_when(
+      level=="Just Cancelled" ~ "Neutral framing of cancelation (relative to partisan)",
+      level=="Grad School" ~ "Grad School (relative to First Gen student)",
+      level=="Finished" ~ "Finished Degree (relative to uncompleted)",
+      level=="More likely to be White" ~ "Majority white (relative to majority non-white)",
+      level=="Working" ~ "Working (relative to unemployed)",
+      TRUE~NA_character_),
+      
+      DV=case_when(outcome=="debtors_not_responsible"~"Debtor's responsiblity for their fate",TRUE~"Support for cancelation")
+      
+    ) %>% select(-level,-outcome) 
+
+  #need to have a column titled "Group" for subsetting  
+if(subset==TRUE){  
+  
+ #graphing the bound tables 
+ p1 <- df %>% ggplot(aes(y=Characteristic,x=estimate,xmin=lower,xmax=upper,shape=Group,color=Characteristic)) + geom_pointrange(position = position_dodge(width = 0.5))+ scale_color_few()+labs(y=NULL) +theme_tufte()+theme(panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid") )+
+   #this is so only the legend for shape
+   guides(color= FALSE, size = FALSE)
+          
+}  
+
+else{   
+ #graphing the bound tables 
+ p1 <- df %>% ggplot(aes(y=Characteristic,x=estimate,xmin=lower,xmax=upper,shape=DV,color=Characteristic)) + geom_pointrange(position = position_dodge(width = 0.5))+ scale_color_few()+labs(y=NULL) +
+   #this is so only the legend for shape
+   guides(color= FALSE, size = FALSE)
+}  
+ 
+#removing line if it's mm   
+if(mm==TRUE){
+  
+p <- p1  
+  
+}
+
+else{
+  
+p <- p1+ggthemes::theme_tufte()+geom_vline(xintercept = 0, linetype="dashed", color = "firebrick", size=.5)  +theme(panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid") )
+}  
+       
+return(p)  
+ 
+  
+}
+
+#testing
+# full_sample_model_cancel <- amce(
+#   conjoint,
+#   debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working,
+#   id = ~ID
+# )
+
+# full_sample_model_resp <- amce(
+#   conjoint,
+#   debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working,
+#   id = ~ID)
+
+# test_table <- rbind(full_sample_model_cancel,full_sample_model_resp) %>% as.data.frame()
+
+
+ # modelplot_multi(test_table)
+
+#wrapper function for modelsummary for reporting regression results
+
+model_results <- function(models,title, coef_rename=NULL){
+   
+  pacman::p_load(modelsummary,tinytable)  
+  
+   if (is.null(coef_rename)) {
+    # Code to execute if input is blank
+     
+     modelsummary::modelsummary(models,stars= TRUE,title = title ) %>% 
+ theme_tt("striped") %>%
+ theme_tt("resize") 
+
+     
+     
+     
+  } else {
+    # Code to execute if input is provided
+     modelsummary::modelsummary(models,stars= TRUE,title = title , coef_rename = coef_rename) %>% 
+ theme_tt("striped") %>%
+ theme_tt("resize") 
+  }
+  
+  
+}
+
+```
+
+## Introduction
+
+\setlength\parindent{24pt}
+
+In 2022, prior to the midterm elections, President Biden announced a plan to cancel up to \$20,000 in federal student loan debt per debtor. This plan was a result of the increasing political salience of federal student loan debt over the several years, substantial calls for its cancellation that first emerged into mainstream discussion during the 2020 Democratic primary but had percolated through progressive policy and activist circles [@kanno-youngsBidenCancel102022; @herndonElizabethWarrenHigher2019; @mcelweeUnleashingPoliticalPower2018]. The administration's plan subsequently faced court challenges, including an unfavorable Supreme Court ruling, which forced the administration to pursue cancellation through alternative legal pathways [@novaThisFightNot2023].
+
+To what extent would we expect to find public support for the administration's attempted cancellation and for student debt relief more broadly? One body of work that may help provide an answer is that on the politics of "deservingness", or who "should" be a beneficiary of government policy in general and social welfare programs in particular. This research argues that support for redistributive welfare schemes is influenced by a "deservingness heuristic", and that the inclination to back specific programs or advantages for certain recipients is contingent upon perceptions regarding the recipients' eligibility for support based on their perceptions of merit. Put more simply, programs that serve populations that are perceived as more deserving receive more support [@applebaum2001; @gilensWhyAmericansHate1999]. We see this in citizens consistently being more supportive of "assistance to the poor" than they are of "welfare", because they perceive it as benefiting a different (and presumably more worthy) population [@desanteWorkingTwiceHard2013]. Stereotypes such as believing that some populations are harder working than others influence these perceptions (and hence support for the program in question), likely out of a desire to not provide aid to "free loaders" [@petersenWhoDeservesHelp2012]. Programs that benefit populations who are perceived to have "paid their share" (such as social security recipients) are also viewed more favorably [@winterDangerousFramesHow2008]. And perhaps unsurprisingly, factors such as race or immigration status influence both these perceptions and support for the policy in question [@desanteWorkingTwiceHard2013; @haselswerdtWhoBenefitsRace2022; @stewartEffectsRacialStatus2022; @gilensWhyAmericansHate1999].
+
+This deservingness heuristic can clearly be seen in the broader public debate about the administration's policy, both in the lead up to the 2022 election and ongoing. GOP politicians claimed that: "Biden Owes Americans an Explanation on Why a Truck Driver Who Didn't Go to College Is Now Responsible for the Student Loans of a Rich Lawyer" [@cottonBidenOwesAmericans2022]. Pundits pointed out that debtors had willingly incurred their debt, and even accused other commentators in support of cancellation of misrepresenting the issue and 'self dealing' [@leonhardtOpinionEliminatingAll2018; @barroTheseWhinySelfdealing2022]. Some moderate democrats sought to distance themselves from the policy, fearful of a possible backlash [@pazVotersDonActually2022]. On the other side of the debate, those who supported cancellation invoked similar principles, and argued that debtors *did* deserve aid (and would be perceived as such by the electorate) citing factors such as predatory for-profit schools, the increased necessity of higher education for employment, and the demographics of debtors [@pazVotersDonActually2022]. There were also claims that the administration's failure to do enough to aid debtors would cost the Democrats in the midterms [@morinBidenHasnForgiven2022].
+
+These competing framings of student debtors highlight a gap in the existing scholarly work on the deservingness heuristic generally: it mainly deals with groups that occupy clearly marginalized places in society, such as welfare recipients or refugees. *So what can student debtors tell us about how this heuristic is applied in more ambiguous situations?* This is a group that is in some ways disadvantaged: in addition to whatever financial stress their debt represents, debtors are (compared to similarly educated non-debtors) more likely to be first-generation college students, minorities, low-income, or women [@herndonElizabethWarrenHigher2019]. But they are also in another sense a privileged group: student debtors are, unsurprisingly, more likely to be educated relative to the general population [@loboscoStudentLoanDebt2018]. So do the same dynamics apply in determining if citizens will perceive the potential beneficiaries of a policy as being "deserving" when said beneficiaries are not clearly on the margins of society, but are instead a more "white-collar" group? Does, for example, a higher level of education communicate a higher work ethic (and thus more deserving)? Or does it signal that debtors could easily secure employment (and are thus less deserving)? Does employment communicate that debtors are not "free loading", or does it signal that they do not "need" assistance? Do racial attitudes impact attitudes towards debtors similarly to how they impact attitudes towards welfare recipients? This is why student debtors represent a unique opportunity to expand our understanding of the how the deservingness heuristic is applied.
+
+I test these questions with two separate survey experiments that randomly manipulate the characteristics of student debtors. In a 2022 Cooperative Election Survey (CES) module, I prime some subjects to perceive student debtors as coming from less or more privileged backgrounds than they previously assumed (e.g., first-generation college students) to vary the perceived socio-economic background of debtors and determine its impact on notions of deservingness. I measure preconceptions about debtors (the percent of the group that the respondent believes to be first generation college students), provide an information treatment to some subjects, and then measure support for cancellation and feelings towards student debtors. In a separate conjoint experiment, I build on previous work by @sorellePoliticalBenefitsStudent2023 by presenting manipulated characteristics of individual debtors as a group. I manipulate characteristics such as likelihood of being first-generation college students, degree completion, attendance at graduate school, employment status, and race. I also manipulate whether cancellation is framed as a partisan policy by the Biden administration.
+
+I find some evidence that debtor deservingness is impacted by background characteristics. Specifically, in the CES module, perceiving debtors as being composed of more first generation students than previously thought leads to subjects reporting warmer feelings towards them (though this does not translate to more support for debt cancellation). Among Republican subjects in the second experiment, being primed to see debtors as majority white or non-white appears to impact support for debt cancellation. Other than these results, I mostly find null effects. Even when subset by partisanship, there was no impact on outcomes from framing cancellation as an explicitly partisan act, suggesting that attitudes towards debtors are relatively fixed.
+
+This represents a novel contribution in two important respects. First, I expand the existing work on student relief. In a context closer to the naturalistic setting in which citizens might actually form opinions about the relative merits of actual policy proposals, I find that the deservingness framework does not fully translate, validating findings the of @sorellePoliticalBenefitsStudent2023. This is an important contribution because it shows that the mechanisms that previous research on this topic find are more likely to travel to actual policy attitudes. More significantly, these findings have implications beyond the particular case of student debt: it is both theoretically and substantively noteworthy that traditional notions of "Deservingness" do not fully travel to cases that don't fit neatly into existing conceptual paradigms. In terms of the scholarly literature, this means that the underlying mechanisms of the deservingness framework may be more complex than previously thought. And substantively, as the economy in developed nations continues to grow away from traditional industrial models, the way that groups such as the white collar precariat are interpolated politically will only grow in significance.
+
+## **Deservingness**
+
+As previously mentioned, there is a broad literature on how citizen support for policies is heavily impacted by impressions of the group(s) perceived to benefit from them [@stegmuellerReligionRedistributiveVoting2013]. Citizens appear to use "deservingness" as a cue in making these determinations of merit. The use of deservingness as a heuristic in distributional attitudes may have its origins in evolutionary psychology: In determining how scarce resources are distributed, there is an incentive to avoid giving resources to "free loaders" [@desanteWorkingTwiceHard2013; @petersenWhoDeservesHelp2012].
+
+As to how notions of deservingness are formed, researchers have isolated the primary personal attributes that shape such perceptions, coining the acronym CARIN to encapsulate the five key factors: Control (the degree to which an individual is deemed responsible for their circumstances), attitudes (the person's likability, proper conduct, and appreciation for assistance), reciprocity (the concept that support should be a reward for diligent work or societal contributions), identity (affiliation with a specific group), and need [@vanoorschotMakingDifferenceSocial2006]. Despite criticisms regarding the overlap among the CARIN elements, these five principles of deservingness do have the benefit of potentially being able to be analyzed and verified [@meulemanChangingAttitudesImmigration2009]. Based on these considerations, an image of policy beneficiaries and their deservingness is "socially constructed" in the popular imagination [@schneiderBehavioralAssumptionsPolicy1990; @schneiderSocialConstructionTarget1993]. The deservingness heuristic is applied to this socially constructed group understanding, influencing support or opposition for policies perceived to benefit them.
+
+This social construction of the beneficiary population is thought to be why some programs enjoy broad popular support, while others are consistently the target of political attacks. The populations that benefit from policies such as Social Security, Medicare, or the Earned Income Tax Credit are socially constructed differently from the populations that benefit from welfare or food stamps: they are constructed as being whiter (Identity), having "contributed" more (Reciprocity), and thus have a more legitimate claim upon public resources than other beneficiary populations [@winterDangerousFramesHow2008; @callaghanUnearthingHiddenWelfare2017]. Programs that are viewed as "unearned," in that there is no perceived mechanism through which the beneficiary population "pays into" the program (such as food stamps), tend to be perceived more negatively. In contrast, programs where the target population is perceived as contributing in some fashion (such as Social Security) are viewed more favorably [@winterDangerousFramesHow2008; @kinder1989economics; @jardinaWhiteIdentityPolitics2019]. If a group is seen as either being contributing (or being unable to contribute for reasons outside of their control), citizens will be more likely to support programs that benefit them.
+
+Unsurprisingly, the deservingness heuristic is also informed by other group attitudes (Identity and Attitude under the CARIN framework). Groups that citizens feel they have more in common with are often judged as being more worthy of public assistance, while out-groups are judged as being less worthy. There is a broad literature that connects attitudes toward racial and ethnic groups such as African-American with policy preferences for government policies perceived to benefit that group [@gilensTestingTheoriesAmerican2014; @gilensWhyAmericansHate1999]. For example, attitudes about immigration heavily influence support or opposition for welfare spending due to immigrants being seen as beneficiaries [@garandImmigrationAttitudesSupport2017]. Program construction can also make attitudes like racial or ethnic prejudices more or less relevant [@faricyPublicAttitudesSocial2014]. Such attitudes also appear to have concrete policy impacts; for example, states with larger African-American populations tend to have less generous welfare policies [@hahnWhyDoesCash2017].
+
+Finally, both the deservingness heuristic and redistributive preferences are not exogenous from partisan attitudes. Partisan attitudes can impact which programs are seen as benefiting "deserving" populations [@masonUncivilAgreementHow2018; @helgason_employment_2017]. This is one of the reasons why conjoint/factorial experiment designs are helpful on this subject, as they allow for the independent manipulation of multiple different characteristics [@petersenWhoDeservesHelp2012]. Additionally, in the United States context, there is some evidence of differing partisan application of the deservingness heuristic: @gollustWhoDeservesHealth2011 find that Republicans are more likely to attribute blame to the individual, while Democrats are more likely to blame societal factors [@gollustUnderstandingPublicResistance2014].
+
+### Student Debt
+
+So how does this apply to student debtors? As previously mentioned, debtors occupy a somewhat ambiguous social position. Compared to the general population, they are unsurprisingly more educated (especially when it comes to postgraduate degrees), and have higher average incomes [@leonhardtOpinionEliminatingAll2018]. Compared to their similarly educated non-debtor peers, they have lower average incomes, and are more likely to be non-white, first generation college students, or women [@beamerStudentDebtYoung]. These competing frames mean that the social construction of student debtors, and how they will be interpreted by those using the deservingness heuristic, is unclear. What is the socially constructed model of the student debtor that exists in the mind of the general public? Is it someone with a high degree of control over their situation who choose to opt in to an education and take out loans? Or is it someone who tried their best and has come upon hard times by circumstances outside of their control?
+
+To what extent might citizens similarly rely on a deservingness heuristic to determine their attitudes toward student debt relief? In answering this question, there is limited research that directly examines student debt (or any kind of debt) on which to draw. The existing literature on student debt, for example, primarily focuses on debtors themselves, rather than opinions of this group or policies that affect them. Multiple studies focus on how being a student debtor might motivate or hinder political action in general and with regard to seeking relief of their debt [@levineAmericanInsecurityWhy2015; @ozymyPovertyParticipationSelfInterest2012]. Other work shows that student debtors exhibit signs of both self-interested political behavior and group solidarity [@haselswerdtCarvingOutIsolating2020]. The latter study suggests that debtors may see others in their situation as deserving of assistance (beyond their own self-interest in receiving aid as a member of that group). More broadly, an increasing body of literature links access to credit and debt relief to the welfare state conceptually [@prasadLandTooMuch2012; @sorelleDemocracyDeclinedFailed2020]. This is turn provides reason to believe that the deservingness heuristic may be used in making decisions about these types of policies in the same way it is used to guide attitudes toward other welfare and redistributive policies.
+
+There is, to date, a single article that directly investigates student loan debt and deservingness on which to build. Sorelle and Laws (2023b) test the impact of debtor characteristics on support or opposition towards relieving their debt. Using a conjoint experiment, they vary characteristics of individual debtors, manipulating prospective beneficiaries professional backgrounds (such as doctors vs. engineers) and demographic characteristics (such as race) (Sorelle and Laws 2023b). This allows for an examination of how individual debtor characteristics impact how they are perceived through the deservingness heuristic. The authors find that debtors are seen as more entitled to relief when they are positioned as being more needy and less able to repay their debts on their own, and that debtors who went to for profit colleges and that debtors who went to public universities where seen as being more worthy of cancellation (relative to attending private universities). Debtors who were presented as being unemployed and not actively looking for work were associated with less support for canceling their debt, which would fit with the deservingness heuristic (and the desire to avoid giving aid to "free loaders") being utilized by subjects. Finally (and as would be expected from the existing literature), racial characteristics impact the willingness to support cancellation, with Democrats more willing to forgive the debt of minority debtors and Republicans less so.
+
+Although Sorelle and Laws's (2023) study provides valuable insights into the link between student debtors and deservingness, those insights are potentially limited because of their focus on profiles of individual debtors, rather than debtors as a group. This is because of the nature of any actual policy that would provide debt relief or cancellation. After all, debt cancellation as a policy concerns student debtors as a group, rather than a bespoke cancellation for individual debtors, and as the existent literature shows, there are often significant differences between attitudes towards a policy in the abstract and the actually existing policy (e.g., the difference in levels of support between "assistance to the poor" and "welfare" [@desanteWorkingTwiceHard2013]). Such a distinction is relevant here, as even the narrowest cancellation policy would apply to thousands of debtors. The potential for differences in support for hypothetical cancellation of specific debtors and any actually existing policy that would apply to broad swathe of the population is real. For this reason, it is necessary to directly test public approval or disapproval of debtors *as a group*.
+
+Additionally, there unanswered questions about pre-existing conceptions of debtors as a group in the mind of subjects. What is the social construction of the characteristics of debtors in the mind of the public *prior* to treatment, and how do these characteristics impact notions of deservingness?
+
+## Hypotheses
+
+From this existing literature, we can derive a couple of different hypotheses, all of which depend on how debtors are interpreted through this heuristic. Specifically, we can see if the same factors that were associated with higher or lower levels of support for cancellation at the individual level (in the Sorelle and Laws piece) exhibit that same relationship when applied to debtors as a group. If their education communicates more deservingness (due to signalling a good conduct or other characteristics that improve attitudes), than a higher level of attainment would be expected to be associated with warmer feelings toward them and a greater willingness to support policies that are perceived to benefit them. However, if higher educational attainment communicate less deservingness (by communicating a higher level of responsibility for their situation, and possibly lower need for aid), than it would be expected to be associated with less support for cancellation and colder attitudes towards them as a group. The same dynamic applies with completing (as opposed to unenrolling without finishing) the degree program that caused them to incur the debt. A signal of worse conduct and more responsibility for their situation, or a signal of greater need for aid? Similarly, these questions apply to debtors who are employed or unemployed.
+
+So, I put these two competing hypothesis (regarding need and work ethic) forward formally here:
+
+**H1: Greater need hypothesis:** Debtors being framed as having characteristics that signal more economic precarity will be associated with greater support for debt cancellation and warmer attitudes towards them
+
+**H2: Better conduct hypotheses:** Debtors being framed as having characteristics that signal better conduct (specifically a higher work ethic) will be associated with more support for debt cancellation and more positive attitudes towards them
+
+We would also, given the substantial literature on the impact of group attitudes towards groups that benefit from policy, expect to see the same dynamics with regards towards debt cancellation and group attitudes, which leads to the following hypotheses:
+
+**H3: Group attitudes hypotheses:** Debtors being framed as being more non-white will be associated with less support for debt cancellation and less positive attitudes towards debtors
+
+Finally, given existent research on the impacts of partisan cues on both the deservingness heuristic and policy preferences generally, we would expect partisan framing to impact both support for the policy itself (debt cancellation) and debtors, the population that stood to benefit.
+
+**H4: Partisan cues hypotheses:** Framing cancellation as an explicitly partisan act will be associated with more (less) support among Democrats (Republicans)
+
+## Experiment 1
+
+### Research Design
+
+I tested these hypotheses with two different survey experiments. The first was included on a 1,358-respondent module on the 2022 CES (Cooperative Election Study)[^1]. subjects were asked to guess the percentage of student debtors they believed to be "first-generation" (meaning the first in their family to attend higher education).[^2] They were then randomly exposed[^3] to the actual percentage of student debtors who fit this characterization .[^4] This approach mirrors prior work in the behavior and inequality literature that asks subjects to estimate factors such as the distribution of wealth in society as a means of capturing preconceptions about phenomena such as inequality [@boudreauWantingWhatFair2018]. By asking subjects to guess[^5] the percentage of first-generation student debtors in the population prior to treatment, I was able to take measures of both the "strength" of the treatment (the difference between the actual number and what they believed the number to be) and it's directionality (whether or not they guessed higher or lower).
+
+[^1]: The CES utilizes YouGov's Internet opt-in panel to produce a random, high-quality sample that mirrors the entire nation and is significantly more representative than the samples obtainable from sources such as Amazon's Mturk. CES modules are typically 1,000 subjects. However, because this was a survey experiment with random assignment, I was able to use all subjects, and not just that those that were matched to make a nationally representative sample. I also ran these models with the matched data, and results did not notably differ. Tables for those models are in the appendix.
+
+[^2]: Question text: "You may have heard a lot recently about federal student loan debt and student debtors. A first generation college student is generally considered to be someone for whom both parents have no college degree. What do you think is the percentage of student debtors who are first generation college students? If you are unsure, take your best guess."
+
+[^3]: @tbl-tabmlogit in appendix shows a multinomial logit model predicting assignment to treatment as a function of observable covariates.
+
+[^4]: The exact proportion of student loan debtors that are first generation students varies among several different estimates, especially as definitions of both groups can vary between different estimates. I used a 2021 Federal Reserve SHED (Survey of Household Economics and Decisionmaking) survey that included items on both student loan debt and parent's level of education. Among subjects to the survey, 52% of those who had a student loan indicated that neither of their parents had a college degree, which is where I derived my estimate from.
+
+[^5]: Although it is possible that subjects searched online to obtain this statistic, it is not (or at least was not at time of fielding) readily available online through a cursory search and would require accessing a resource like the SHED survey mentioned in the previous note. Estimates also, as also previously stated, vary by data source/definition of the terms, so it would still be possible for subjects to be treated by being given the "right" answer if it differed from what they found online.
+
+The extent to which subjects believe that student debtors are first generation students allows for the isolation of one of the attributes of the CARIN framework:*Need*, or the extent to which the policy beneficiary in question "actually needs" the assistance that the policy would provide them [@vanoorschotMakingDifferenceSocial2006]. Given the demographics of first generation college students (specifically the fact that they are more likely to be non-white), there is a possibility that first generation student status might also influence other aspects of the deservingness heuristic, such as *Identity* (the degree of connection that the respondent feels with policy beneficiaries based on demographic characteristics). However, subjects may or may not be aware that first generation students are more likely to be non-white, while the item asking what percentage of debtors that they estimate are first-generation explicitly says that first generation status means that neither of the student in question's parents attended college. I anticipate that family educational attainment can be relied upon to signal to at least some extent socio-economic status, without explicitly priming other characteristics such as race. Thus, I in turn anticipate that first generation status serves primarily as a measure of *Need*, rather than *Identity.*
+
+After measuring their perceptions of the percentage of student debtors that are first-generation students and randomly assigning them to receive (or not receive) information about the actual percentage, I ask two questions that serve as my dependent variables. The first captures attitudes toward debtors using a feeling thermometer (ranging from zero to one hundred), with higher values representing "warmer" feelings towards debtors as a group. The second asks about support for additional student debt cancellation[^6] on a six point scale ranging from "strongly agree" to "strongly disagree." I also randomly varied the order of these two outcome measures. This was to isolate out any effect that being possibly primed to see student debtors as policy beneficiaries had on attitudes towards them as a group.
+
+[^6]: Question text: "As you may know, the federal government recently cancelled some federal student loan debt. To what extent do you agree or disagree with the following statement: "The federal government should cancel more or all federal student loan debt." "
+
+In the analyses below, I subset the sample to high and low guessers (those above or below the number shown in the treatment, respectively). I do so because subjects, in essence, receive different treatments contingent on what they guess. High guessing subjects were being told that the background of student debtors as a group was relatively more privileged than they had guessed (signaling that they potentially had less need), while the opposite was being communicated to those who guessed low. Roughly 46% of the sample guessed low, while 51% guessed high[^7]. @fig-groupchart[^8] shows that the average percent guessed varied notably along several different characteristics, such as partisanship, race, and gender (although interestingly, less so along education lines) [^9].
+
+[^7]: There were 30 subjects who guessed the exact value in the treatment, and who were thus not included in either the high or low guessers subset, along with four subjects who skipped the question.
+
+[^8]: In Appendix
+
+[^9]: I also ran a model with the percent of debtors guessed as the dependent variable (table in appendix), which showed that these same characteristics (partisanship, race, and gender) predicted the amount guessed in the same direction. 
+
+### Results
+
+```{r}
+#coef_rename for all values
+coef_rename <-  c("treated" = "Treated with new information",
+                "relief_first" = "Question Order: Asked about relief first",
+                "treated:relief_first" = "Treatment x Relief first",
+                "relief_first:treated" ="Treatment x Relief first", 
+                "(Intercept)"="Constant",
+                "treat_bidenJust Cancelled" = "Neutral Cancelation frame",
+                "treat_schoolGrad School" = "Graduate School",
+                "treat_finishFinished" = "Finished Degree",
+                "treat_raceMore likely to be White" = "More Likely to be White",
+                "treat_workingWorking" = "Working",
+                "Democrat" = "Democrat",
+                "Republican" = "Republican",
+                "dem_to_rep" = "Dem to Rep partisanship", 
+                "ideo5_new" = "Liberal to conservative ideology",
+                "not.white" = "Non-white",
+                "female" = "Female",
+                "educ" = "Education level",
+                "faminc_new" = "Family income",
+                "student.debtor" = "Student debtor",
+                "newsint" = "Attention to news")
+ 
+ #very simple helper fundtion for adding notes
+ note_add <- function(x){
+   
+   notes <- "OLS regression coefficents presented with standard errors in brackets. Depedent variables is"
+ 
+   note_output <- paste0(notes," ",x)
+   return(note_output)
+   
+ }
+   
+   
+   
+#same with gof_omit
+gof_omit <- "Log|F|RMSE|R2|AIC|BIC"
+#changing WD inside chunk to other folder for CES experiment
+setwd("~/Desktop/Grad School/CES 2022")
+#this is the UNMATCHED data because gives a little more power and it's an experiment so don't need weights as much
+cces <- read_dta("CCES22_UCR_unmatched_OUTPUT.DTA")
+setwd("/Users/alexanderross/Desktop/Grad School/debt_conjoint 2")
+
+```
+
+```{r}
+#this is ugly and doesn't follow best practices because c/p from old code I wrote in 2022
+
+
+# function to replace values in a column with NA
+replace_with_na <- function(df, col_name, values) {
+  df %>%
+    mutate(!!paste0(col_name, "_new") := ifelse(.data[[col_name]] %in% values, NA_real_, .data[[col_name]]))
+}
+
+#
+#
+#
+#
+#treatment variables
+cces_clean <- cces %>% 
+  filter(UCR343 !=8,) %>%
+  mutate(treated=case_when(QUCR341rand==1~1,
+                           TRUE~0))%>% 
+  mutate(control=case_when(QUCR341rand==2~1,
+                           TRUE~0))%>% 
+  mutate(debt_guess=UCR340) %>% 
+  mutate(debtor_therm=UCR342) %>%
+  #mutate(debt_relief=10-UCR343) %>% 
+  mutate(therm_first=case_when(QUCR342rand==1~1,TRUE~0)) %>% 
+  mutate(relief_first=case_when(QUCR342rand==2~1,TRUE~0)) %>% 
+  mutate(student_debtor=case_when(edloan==1~1,TRUE~0)) %>% 
+  mutate(treat_difference=case_when(control==1~0,
+                                    treated==1~52-debt_guess),
+         treat_guess_high=case_when(treated==1&debt_guess>52~1,TRUE~0),
+         treat_guess_low=case_when(treated==1&debt_guess<52~1,TRUE~0),
+         high_guess=case_when(debt_guess>52~1,TRUE~0),
+         low_guess=case_when(debt_guess<52~1,TRUE~0),
+         treat_size=abs(treat_difference),
+         treat_large=case_when(treat_difference>=10~1, TRUE~0),
+         treat_small=case_when(treat_difference<=10~1, TRUE~0)) %>% 
+  mutate(female = case_when(
+    gender4 ==2~1,
+  TRUE~0)) %>% 
+  mutate(not.white=case_when(
+    race >= 2~1,
+    TRUE~0)) %>% 
+  mutate(reg.democrat=case_when(
+    CC22_360== 2~1,
+    TRUE~0
+  )) %>% 
+  mutate(reg.republican=case_when(
+   CC22_360==3~1,
+   TRUE~0
+  )) %>% #replacing not sure and don't know with NAs, party id scale
+  mutate(dem_to_rep=pid7) %>% 
+  mutate(college.grad=case_when(
+    educ>=4~1,
+    TRUE~0)) %>% 
+  mutate(age=(2022-birthyr)) %>% 
+  mutate(urban=case_when(
+    urbancity==1~1,
+    TRUE~0)) %>% 
+  mutate(rural=case_when(
+    urbancity==4~1,
+    TRUE~0)) %>% 
+  mutate(some.coll=case_when(
+    educ==3~1,
+    TRUE~0)) %>%
+  mutate(two.yr.degree=case_when(
+    educ==4~1,
+    TRUE~0)) %>%
+  mutate(four.yr.degree=case_when(
+    educ==5~1,
+    TRUE~0)) %>%
+  mutate(post.grad=case_when(
+    educ==6~1,
+    TRUE~0)) %>% 
+  mutate(student.debtor=case_when(
+    edloan==1~1,
+    TRUE~0)) %>% 
+  mutate(military=case_when(
+    milstat_1==1~1,
+    milstat_3==1~1,
+    TRUE~0)) %>%
+  mutate(lost_job=case_when(
+    CC22_305_2==1~1,
+    TRUE~0)) %>% 
+  replace_with_na("ideo5", 6) %>% 
+  filter(UCR343!=8) %>% 
+  mutate(debt_relief=UCR343) %>% 
+  mutate(
+    #quintile variable for their guess
+  
+    #making guess distance variable
+    
+    guess_dist= abs(52-debt_guess),
+    
+    quintile = ntile(guess_dist, 6),
+    
+    guess_dist_all= 52-debt_guess,
+
+    quintile_all= ntile(guess_dist_all, 6),
+    
+    quintile_simple=ntile(debt_guess,6),
+
+    
+     #variables for the graph
+
+    Partisanship=case_when(pid7 %in% c(1,2,3)~"Democrat",
+                          pid7 %in% c(5,6,7)~"Republican", pid7 %in% c(4,8,9)~"Independent"
+                             ),
+    
+    Race= case_when(not.white==1~"Non White",
+                    TRUE~"White"),
+    
+    Debt=case_when(edloan==1~"Debtor",
+    TRUE~"Non Debtor"),
+    
+    Education=case_when(educ>=4~"At least some college",
+                      TRUE~"No College"),
+    
+    Gender=case_when(female==1~"Female",TRUE~"Male"),
+    
+    `News Interest`=case_when(newsint%in% c(1,2)~"High Interest",TRUE~"Low Interest")
+    
+  ) #%>% # Create separate quantiles for negative and positive values
+ 
+
+
+
+
+
+
+
+
+
+
+
+#%>% filter(debt_guess!=52&debt_guess!=50)
+#cces_clean %>% filter(Partisanship=="Democrat") %>% nrow()
+
+#cces_clean %>% select(quintile_all,guess_dist_all) %>% unique %>% View()
+
+#cces_clean %>% filter(quintile_all==3 & guess_dist_all>0) %>% nrow()
+
+#cces_clean %>% select(quintile_all,guess_dist_all) %>% View()
+```
+
+@tbl-feelingtherm presents OLS results of the effect of informing subjects about the percentage of student debtors who are first-generation college students on their feeling thermometer rating of this group. Because there were also theoretical reasons to expect that being primed to see debtors as a potential population of policy beneficiaries might impact attitudes towards them (per the previously discussed deservingness heuristic), the model was run with and without an interaction term indicating question order. Columns 1 and 4 show that for the entire sample the effect of the treatment is small and statistically indistinguishable from 0. This is not surprising, as the effect of informing some that they overestimated and others that they underestimated the percentage of student debtors who are first generation should roughly cancel each other out. In column 2, we see that among subjects who guessed high, the treatment slightly reduces their feeling thermometer score by 1.5 points (though the effect is not statistically significant; *p*=0.40). In contrast, column 3 shows that the treatment led to warmer feelings toward debtors for those who guessed low by 4.0 points (*p*=.02). This effect is even more pronounced among this subsample when the interaction term for question order was included in the model, with an increase of nearly 7 points on the feeling thermometer (Column 6, *p*=0.004). These results suggest some support for *H1*: those who were given an information treatment that suggested student debtors were a more precarious group than they previously assumed had more positive attitudes towards them than those with similar preconceptions who were not provided with new information. The effect appears to be driven mostly by those who guessed the lowest: @fig-quantilechart shows the treatment effect with the data split into sixths by what percent of debtors subjects guessed were first generation students, with bins 1-3 composed entirely of those who guessed lower than the actual amount and bins 4-6 being composed of those who guessed higher. The treatment effect is by far the strongest among the sixth that guessed lowest, with treatment being associated with over a 9 point increase in self-reported feelings towards debtors among this group.
+
+When we shift to support for additional student debt cancellation, however, there is no detectable treatment effect. @tbl-tabccancelces shows that the effect is essentially zero for those who overestimate the extent that student debtors are first-generation students, while for those who underestimate that percentage the treatment reduces opposition by .19 points but is not statistically significant (p=0.26). The results are similar when question order effects are included in the model.
+
+The results in Experiment 1 suggest that while attitudes toward debtors as a group may be influenced by perceptions of them as privileged or struggling, attitudes towards policy that benefits them are not as easily moved [^10]. This experiment, however, only manipulates one possible characteristic of debtors.[^11] There are a variety of other characteristics that we might expect to be relevant if the dynamics influencing attitudes toward student debtors are similar to those affecting attitudes toward policies such as welfare. In order to assess those considerations, I turn to my second study.
+
+[^10]: Models run with covariates yield similar results (shown in the appendix), and the results did not significantly vary.
+
+[^11]: I also ran the same models with the treatment as a continuous variable (the distance between the respondent's guess and the number in the treatment), rather a binary as shown in these models. Shown in the appendix, those models found no notable treatment effect both with and without the interaction effect.
+
+
+
+
+```{r}
+#| label: tbl-feelingtherm
+#| tbl-cap: "Feeling thermometer towards debtors as a group"
+#| echo: false
+
+
+high_guessers <- filter(cces_clean,high_guess==1) 
+low_guessers <- filter(cces_clean,low_guess==1)
+
+
+
+models <- list(
+  "All"=lm(debtor_therm~treated,data=cces_clean),
+  "High Guessers"=lm(debtor_therm~treated,data=high_guessers),
+  "Low Guessers"=lm(debtor_therm~treated,data=low_guessers),
+  "All"=lm(debtor_therm~treated*relief_first,data=cces_clean),
+  "High Guessers"=lm(debtor_therm~treated*relief_first,data=high_guessers),
+  "Low Guessers"=lm(debtor_therm~treated*relief_first,data=low_guessers)
+)
+
+#modelplot_custom(models)
+#modelsummary(models)
+modelsummary(models,
+             stars = TRUE,
+             gof_omit = gof_omit,
+             coef_rename = coef_rename,
+              notes = note_add("coded 1–100, higher values represent warmer feelings"),
+             output="kableExtra") %>%
+  add_header_above(c(" " = 1, "Without Interaction" = 3, "With Interaction" = 3)) %>% 
+  kable_styling(latex_options="scale_down",  "striped")
+
+```
+
+
+```{r}
+
+
+
+modelplot_custom <- function(x){
+  
+  p <- modelplot(x,coef_omit = 'Interc')+theme_tufte()+scale_color_few()+geom_vline(xintercept = 0, linetype="dashed", 
+                color = "firebrick", size=.5)+
+theme(legend.position = "bottom")+
+guides(color=guide_legend(nrow=2, byrow=TRUE))
+  return(p)
+}
+
+#
+
+#
+
+
+
+#high_guessers %>% select(quintile_diff) %>% View()
+#high_guess_dems <- filter(high_guessers,pid7%in% c(1,2,3))
+#low_guess_dems <- filter(low_guessers,pid7%in% c(1,2,3))
+
+#high_guess_gop <- filter(high_guessers,pid7 %in% c(5,6,8))
+#low_guess_gop <- filter(low_guessers,pid7 %in%  c(5,6,8))
+
+
+quantile_1 <- low_guessers %>% filter(quintile_simple == 1)
+quantile_2 <- low_guessers %>% filter(quintile_simple == 2)
+quantile_3 <- low_guessers %>% filter(quintile_simple == 3)
+quantile_4 <- high_guessers %>% filter(quintile_simple == 4)
+quantile_5 <- high_guessers %>% filter(quintile_simple == 5)
+quantile_6 <- high_guessers %>% filter(quintile_simple == 6)
+
+
+#quantile_1 <- cces_clean %>% filter(quintile_simple == 1)
+#quantile_2 <- cces_clean %>% filter(quintile_simple == 2)
+#quantile_3 <- cces_clean %>% filter(quintile_simple == 3)
+#quantile_4 <- cces_clean %>% filter(quintile_simple == 4)
+#quantile_5 <- cces_clean %>% filter(quintile_simple == 5)
+#quantile_6 <- cces_clean %>% filter(quintile_simple == 6)
+
+
+
+
+models_ntile <- list(
+  
+                "1st (lowest guesses)"=lm(debtor_therm~treated,data=quantile_1),
+  
+                "2nd"=lm(debtor_therm~treated,data=quantile_2),
+               
+               "3rd"=lm(debtor_therm~treated,data=quantile_3),
+               
+               
+                "4th"=lm(debtor_therm~treated,data=quantile_4),
+  
+                "5th"=lm(debtor_therm~treated,data=quantile_5),
+               
+               "6th (highest guesses)"=lm(debtor_therm~treated,data=quantile_6)
+               )
+
+               
+               
+ models_ntile_cencel <- list(
+  
+                "1st"=lm(debt_relief~treated,data=quantile_1),
+  
+                "2nd"=lm(debt_relief~treated,data=quantile_2),
+               
+               "3rd"=lm(debt_relief~treated,data=quantile_3),
+               
+               
+                "4th"=lm(debt_relief~treated,data=quantile_4),
+  
+                "6th"=lm(debt_relief~treated,data=quantile_5),
+               
+               "7th"=lm(debt_relief~treated,data=quantile_6)
+               )
+              
+               
+               
+               
+               
+  
+  
+  
+  
+  
+  
+  
+  
+#modelsummary(models_ntile_cencel,
+ #stars = TRUE,
+ #title = "Results by Quintile, Debtor Thermometer",
+ #output = "latex",
+# gof_omit = gof_omit,
+#) %>%
+ #group_tt(j = list("All Debtors" = 1, "High Precarity" = 2, "Low Precarity" = 3)) %>%
+ #theme_tt("striped") %>%
+# theme_tt("resize") 
+ 
+
+```
+
+```{r}
+#| label: fig-quantilechart
+#| fig-cap: "Impact of treatment on sympathy for debtors by guess quantile" 
+
+
+
+
+
+modelplot_custom(models_ntile)
+
+```
+
+
+```{r,error=TRUE}
+#| label: tbl-tabccancelces
+#| tbl-cap: "Support for debt relief"
+#| echo: false
+
+models <- list(
+  "All"=lm(debt_relief~treated,data=cces_clean),
+  "High Guessers"=lm(debt_relief~treated,data=high_guessers),
+  "Low Guessers"=lm(debt_relief~treated,data=low_guessers),
+  "All"=lm(debt_relief~treated*relief_first,data=cces_clean),
+  "High Guessers"=lm(debt_relief~treated*relief_first,data=high_guessers),
+  "Low Guessers"=lm(debt_relief~treated*relief_first,data=low_guessers)
+)
+
+#modelplot_custom(models)
+#modelsummary(models)
+modelsummary(models,
+             stars = TRUE,
+             gof_omit = gof_omit,
+             coef_rename = coef_rename,
+             notes=note_add("coded on a five point scale, higher values represent more support"),
+             output="kableExtra") %>%
+  add_header_above(c(" " = 1, "Without Interaction" = 3, "With Interaction" = 3)) %>% 
+  kable_styling(latex_options="scale_down",  "striped")
+#%>% theme_tt("resize") %>% theme_tt("striped") %>% group_tt(j = list("With Interaction" = 2:4, "Without Interaction" = 5:7)) 
+#
+#summary(lm(debt_relief~treated,data=low_guessers))
+```
+
+## Experiment 2
+
+### Research Design
+
+Experiment 2 ran in September of 2023, with an *N* of 2,034[^12] subjects on the Lucid survey platform. Conjoint experiments, or survey experiments which randomly manipulate multiple characteristics of a situation or person that subjects are presented with, are particularly useful for research questions dealing with deservingness, as they lend themselves to manipulating multiple factors [@petersenWhoDeservesHelp2012]. While previous work on student debtors has built on the literature that uses conjoint experiments to determine the impact of demographic characteristics (eg. education or religion) on attitudes towards individual members of groups such as immigrants, I instead manipulate characteristics of debtors as a group [@sorelleDeservingnessPoliticsStudent2023; @sorellePoliticalBenefitsStudent2023]. I argue that this preserves external validity. Voters will never be asked whether they approve of cancelling the individual debt of individual debtors, but will instead potentially be exposed to policy appeals from politicians that frame debtors as a group as deserving or not. Thus, while experiments that manipulate individual characteristics might be effective at determining the impact of characteristics on attitudes towards those individual debtors, they may fail to capture attitudes towards debtors as a group.
+
+[^12]: 2,774 subjects before filtering out those who failed attention screens.
+
+That said, focusing on group-level characteristics eliminates the ability to leverage one of the strengths of conjoint experiments: having individual subjects conduct multiple (often many) evaluations. This is because of the difficulty of plausibly changing those characteristics as presented to subjects. Despite this fact, this approach arguably better reflects the decision that subjects face when asked about support for debt relief.
+
+I selected five dimensions to randomly vary my description of debtors and debt cancellation. Each of these manipulations, with the exception of one (which aimed to trigger partisan attitudes by specifically attributing cancellation to the Biden administration), was designed to explore various aspects of the deservingness heuristic. I manipulated whether debtors had completed their degrees (versus dropping out) or were unemployed (versus working) to contrast signals of greater need against signals of better conduct. Similarly, I varied first-generation student status and graduate degree attainment to juxtapose higher educational attainment (possibly indicating a higher work ethic and thus better conduct) with a less privileged family background (possibly indicating greater need). Lastly, the manipulation of whether debtors were presented as predominantly white or nonwhite was intended to trigger group-based attitudes, specifically racial ones.
+
+All of these manipulations were factually true. Student debtors are, for example, both more likely to be white (when compared to the general population), and more likely to be non-white (when compared to non-debtors with similar levels of education) [@loboscoStudentLoanDebt2018]. Similarly, student loan debt cancellation *would* disproportionately benefit *both* those who are first generation college students (who are more likely to struggle with a high debt to income ratio) *and* those who have graduate degrees (who are more likely to have student debt generally). Thus, I was able to leverage the ambiguous social position that debtors occupy to manipulate how they were framed as a group.
+
+The treatment that subjects were exposed to is below in bold, with manipulations [underlined:]{.underline}
+
+**As you may know, some portion of federal student loan debt was recently the subject of [a proposed cancellation by the Biden administration / a proposed cancellation]{.underline}. This cancellation would disproportionately benefit those who [are the first in their family to go to college / who are enrolled in graduate degree programs]{.underline} and those who [graduated with / did not finish their degree but still have]{.underline} a large amount of student debt. Millions of student debtors, who in general [are less likely to be white than student non-debtors / like student non-debtors are more likely to be white]{.underline}, would be affected by this policy. It would also impact many debtors who are [currently unemployed and thus unable to make payments on / working and using a large part of each paycheck to make payments on]{.underline} their loans.**
+
+For dependent variables, I used measures intended to capture outcomes similar to the first study: support for student debt cancellation and attitudes toward student debtors. For the first outcome, I used the same question as was used in the first study. For the second measure, I asked subjects to what extent they felt that student debtors struggling with debt bore responsibility for their fate [^13], to capture both attitudes towards debtors, and the degree to which they were seen as responsible for their circumstances, something that existing work on the subject has found to be important in how people are interpreted through the lens of the deservingness heuristic [@vanoorschotMakingDifferenceSocial2006].
+
+[^13]: Question wording: "To what extent do you agree or disagree with the following statement: "Those struggling with student debt bear most of the responsibility for their situation." ". Responses were six point scale ranging from "Strongly Agree" to "Strongly Disagree".
+
+### Results
+
+The marginal means for framing cancellation neutrally (relative to being framed as explicitly partisan), framing debtors as first-generation students (relative to being framed as more likely to hold graduate degrees), framing them as having finished their degree programs (relative to being framed as having left them unfinished), being white (relative to being non-white), and working (relative to being unemployed) were all associated with viewing debtors as less responsible for their situation[^14]. The largest differences in marginal means were observed for first-generation status, completing education, and race[^15].
+
+[^14]: Though marginal means are not causal, they are useful for describing preferences among subjects [@leeperMeasuringSubgroupPreferences2020].
+
+[^15]: @fig-minGraph (in the appendix) shows the marginal means of each treatment on the outcome of feeling that debtors are personally responsible for their situation, with higher values indicating that they are less responsible, among all subjects.
+
+    ```{r tableOLS,eval=FALSE}
+    #this is stuff diogo told me to run. putting a pin in it for the dissertation
+    models <- list(
+      "Debtor Attitudes" = lm(debtors_not_responsible ~  + treat_biden*Republican + treat_school + treat_finish +  + treat_race*Republican , data = conjoint),
+      
+      "Support for cancelation" = lm(debt_cancel ~  + treat_biden*Republican + treat_school + treat_finish  + treat_race*Republican , data = conjoint),
+      
+        "Debtor Attitudes" = lm(debtors_not_responsible ~  + treat_biden*Democrat + treat_school + treat_finish + + treat_race*Democrat , data = conjoint),
+      
+      "Support for cancelation" = lm(debt_cancel ~  + treat_biden*Democrat + treat_school + treat_finish  + treat_race*Democrat , data = conjoint)
+
+      )
+      
+      
+      
+    modelsummary(models, output = "kableExtra", 
+                 stars = TRUE, 
+                 gof_omit = gof_omit, 
+                 title = "OLS Regression with Binary Variables and Partisan Interaction Effect",
+                 coef_rename = coef_rename
+                 
+                 
+                 
+                 )%>% theme_tt("resize") %>% theme_tt("striped") %>% group_tt(j = list("GOP Interaction" = 2:4, "Dem Interaction" = 5:6)) 
+
+    #%>% kable_styling(latex_options=c("scale_down", "striped"))%>% add_header_above(c(" " = 1, "GOP Interaction" = 2, "Dem Interaction" = 2)) 
+
+
+    ```
+
+The second panel in @fig-minGraph also shows the marginal means for the debt cancellation outcome, with higher values representing more support for canceling student debt. The only treatment with differing directionality from the other outcome was the partisan framing, where the marginal mean for cancellation being framed as partisan was higher than for its neutral presentation. Otherwise, the directionality of all treatments remained the same as for the outcome measuring attitudes towards debtors. Though helpful for preference description, marginal means cannot capture causality. To do so, I turn to the Average Marginal Conjoint Effect, or AMCE[^16]. The Average Marginal Conjoint Effect quantifies the average impact of altering a single attribute level while holding other attributes constant, on the probability of a particular outcome in a conjoint analysis. While none of the treatments were significant, debtors presented as majority white and having completed their degrees were found to be associated with both more support for cancellation and more sympathy for debtors (relative to their respective alternatives). All other characteristics[^17] were associated with negative impacts on both outcomes, though these results are, again, not of statistical significance.
+
+[^16]: AMCE = $\frac{1}{N} \sum_{i=1}^N [Y_i(t_l, x_{-lk}) - Y_i(t_k, x_{-lk})]$, where $N$ is the total number of respondents, $Y_i$ is the outcome for respondent $i$, $t_l$ and $t_k$ are two attribute levels being compared, and $x_{-lk}$ represents the levels of all other attributes.
+
+[^17]: Specifically, these were: Working (control: Unemployed), Neutral framing of cancelation (control: Partisan Framing), and Grad school (control: First gen college student). Because one of the treatments (varying whether debt cancellation is framed neutrally or as a policy of the Biden administration) invokes partisanship, and there are reasons to believe that the deservingness heuristic will be applied differently based on partisanship, I also subset the sample by partisanship. In terms of preference description (marginal means), Democrats were, unsurprisingly, much more inclined to view debtors as not responsible for their situation and to support debt cancellation, but there are some notable differences between subgroups, particularly on first-generation student status, race, and employment on both outcomes\[\^18\].
+
+```{r}
+mm_all_reponsible <- cj(conjoint, debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "mm") %>% mutate (Partisan = "All")
+
+responsible_mm_partisan <- cj(conjoint, debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "mm", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent") %>% select(-BY)
+
+
+test <- rbind(mm_all_reponsible,responsible_mm_partisan)
+#View(test)
+
+
+library(dplyr)
+library(tidyr)
+
+# Reshape data to long format
+data_long <- test %>%
+  pivot_longer(cols = estimate:upper, names_to = "metric", values_to = "value") %>%
+  select(Partisan, feature, level, metric, value)
+
+# Calculate mean for each combination of Partisan, feature, and level
+means <- data_long %>%
+  group_by(Partisan, feature, level, metric) %>%
+  summarise(mean_value = mean(value, na.rm = TRUE), .groups = "drop")
+
+# Spread the means to wide format
+table_data <- means %>%
+  pivot_wider(names_from = metric, values_from = mean_value)
+
+# Print the table
+tab_data <- table_data %>%
+  select(Partisan,level, estimate, `std.error`, z, p, lower, upper) %>%
+  pivot_wider(names_from = Partisan, values_from = c(estimate, `std.error`, z, p, lower, upper)) %>%
+  rename(`Level` = level) %>%
+  select(`Level`, starts_with("estimate"), starts_with("std.error"), starts_with("z"), starts_with("p"), starts_with("lower"), starts_with("upper")) #%>%
+  
+  #print(row.names = FALSE)
+
+tab_data2 <- tab_data %>% 
+  mutate(
+    Condition= Level,
+    
+    All=paste0(round(estimate_All,2)," (",round(std.error_All,3),")"),
+    
+    Democrats =paste0(round(estimate_Democrat,2)," (",round(std.error_Democrat,3),")"),
+    
+    Republicans =paste0(round(estimate_Republican,2)," (",round(std.error_Republican,3),")")
+    
+  ) %>% select(Condition,All,Democrats, Republicans)
+
+tab_data2 %>% kable("latex", booktabs = TRUE,caption = "Marginal Means by subgroup, Debtor Responsibility Outcome") %>% kable_styling(latex_options = c("scale_down", "hold_position"))
+```
+
+I similarly break down AMCE by partisanship in this way. @fig-acmepartisancancel shows the AMCE for partisanship on the outcome for canceling student debt. Of note is that the only characteristic that seems to be associated with meaningful movement on the outcome measure is the race of debtors. @fig-acmepartisanresponsible shows the AMCE broken down by partisanship when it comes to the outcome measuring how responsible debtors are seen as being for their situation.
+
+```{r}
+
+
+
+improve_feature_names <- function(df) {
+  name_mapping <- c(
+    "treat_biden" = "Biden's policy vs. neutral frame",
+    "treat_school" = "Grad school vs. First-Gen Student",
+    "treat_finish" = "Finished vs. dropped out",
+    "treat_race" = "Majority white vs. majority non-white",
+    "treat_working" = "Working vs. Unemployed"
+  )
+  
+  df %>%
+    mutate(feature = coalesce(name_mapping[feature], feature))
+}
+
+
+
+mm_by <- cregg::cj(conjoint, debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "amce", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent") %>% improve_feature_names()
+
+
+```
+
+```{r}
+#| label: fig-acmepartisanresponsible
+#| fig-cap: "AMCE by partisanship, Debtors are responsible"
+#| echo: false
+
+improve_feature_names <- function(df) {
+  name_mapping <- c(
+    "treat_biden" = "Biden's policy vs. neutral frame",
+    "treat_school" = "Grad school vs. First-Gen Student",
+    "treat_finish" = "Finished vs. dropped out",
+    "treat_race" = "Majority white vs. majority non-white",
+    "treat_working" = "Working vs. Unemployed"
+  )
+  
+  df %>%
+    mutate(feature = coalesce(name_mapping[feature], feature))
+}
+
+mm_by <- cj(conjoint, debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "amce", by = ~Partisan) %>% 
+  filter(Partisan!="Other/Indepdent") %>% 
+  improve_feature_names()
+
+plot(mm_by, group = "Partisan", vline = 0) + 
+  theme_tufte() + 
+  scale_color_few() + 
+  theme(panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid")) +
+  scale_color_discrete(na.translate = FALSE)
+
+```
+
+```{r}
+#mm_by_race <- cj(conjoint, debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "mm", by = ~Race) #%>% filter(Partisan!="Other/Indepdent")
+
+#plot(mm_by_race, group = "Race", vline = 0)+theme_tufte()+scale_color_few()
+
+```
+
+```{r}
+#| label: fig-acmepartisancancel
+#| fig-cap: "AMCE by partisanship, Support for canceling debt"
+
+mm_by <- cj(conjoint, debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "amce", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent")%>% improve_feature_names()
+
+plot(mm_by, group = "Partisan", vline = 0)+theme_tufte()+scale_color_few()+theme(panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid") )+
+  scale_color_discrete(na.translate = FALSE)
+
+```
+
+```{r partisanAMCEcancel, fig.cap="Support for cancelation, Subset by party, AMCE"}
+
+#not using this but keeping the code in case want to use later
+
+#republicans <- filter(conjoint,Republican==1)
+
+#test_republicans_cancel <- amce(
+  #republicans,
+  #cancel_formula,
+  #id = ~ID
+#) %>% mutate(Group= "Republicans")
+
+#democrats <- filter(conjoint,Democrat==1)
+
+#dems_cancel <- amce(
+  #democrats,
+  #cancel_formula,
+  #id = ~ID
+#) %>% mutate(Group="Democrats")
+
+#cancel_partisan <- rbind(republicans_responsible,dems_responsible)
+
+#modelplot_multi(cancel_partisan, subset = TRUE)
+
+```
+
+```{r }
+library(kableExtra)
+
+
+#custom_plot(full_sample_model_resp) + 
+  #labs(title  = "Debtor Responsible, Full Sample",caption = responsibility_caption)
+
+#save this for later renders to pdf or html
+#kable(full_sample_model_resp, "html") %>%
+  #kable_styling(font_size = 12, position = "center") %>%
+  #row_spec(0, bold = TRUE, color = "white", background = "#4F81BD")
+#knitr::kable(full_sample_model_resp[1:10, ], caption = "Do debtors bear responsiibility? AMCE, Full Sample")
+
+#I'm gonna be doing this a bunch so this is a function for making the tables look good
+
+nice_table_true <- function(df,group=FALSE){
+  
+  df2 <- df %>% 
+    #removing columns that don't make sense
+    select(-outcome,-statistic,-feature) %>%
+    #removing blank rows
+    filter(estimate!=0) %>% 
+    #creating Better labels
+    mutate(Characteristic=case_when(
+      level=="Just Cancelled"~"Neutral framing of cancelation (relative to partisan)",
+      level=="Grad School"~"Grad School (relative to First Gen student)",
+      level=="Finished"~"Finished Degree (relative to uncompleted)",
+      level=="More likely to be White"~"Majority white (relative to majority non-white)",
+      level=="Working"~"Working (relative to unemployed)",
+      TRUE~NA
+    )) %>% select(-level) %>% 
+  mutate(P = paste0(p, 
+                    ifelse(p < 0.001, "***",
+                    ifelse(p < 0.01, "**"
+                    #ifelse(p < 0.05, "*"
+                    #ifelse(p < 0.1, "+", "",
+                           #)
+                    )))) 
+    #reordering so that the characteristic column is there
+    if(group==TRUE){
+      #if it's a subgroup graph
+       df3 <- df2 %>% 
+         mutate(Group=BY) %>% 
+         select(-BY) %>% 
+       select(Characteristic,everything())
+
+      
+    }
+  
+  else{
+    df3 <- df2 %>% 
+       select(Characteristic,everything())
+
+    
+    
+  }
+    
+    return(df3)
+    
+  
+  
+  
+}
+
+#claude version below
+nice_table_true <- function(df, group=FALSE) {
+  df2 <- df %>%
+    select(-outcome, -statistic, -feature) %>%
+    filter(estimate != 0) %>%
+    mutate(Characteristic = case_when(
+      level == "Just Cancelled" ~ "Neutral framing of cancelation (relative to partisan)",
+      level == "Grad School" ~ "Grad School (relative to First Gen student)",
+      level == "Finished" ~ "Finished Degree (relative to uncompleted)",
+      level == "More likely to be White" ~ "Majority white (relative to majority non-white)",
+      level == "Working" ~ "Working (relative to unemployed)",
+      TRUE ~ NA_character_
+    )) %>%
+    select(-level) %>%
+    mutate(estimate = case_when(
+      p < 0.001 ~ paste0(estimate, "***"),
+      p < 0.01 ~ paste0(estimate, "**"),
+      p < 0.05 ~ paste0(estimate, "*"),
+      #p < 0.1 ~ paste0(estimate, "+"),
+      TRUE ~ as.character(estimate)
+    ))
+
+  if (group == TRUE) {
+    df3 <- df2 %>%
+      mutate(Group = BY) %>%
+      select(-BY) %>%
+      select(Characteristic, estimate, everything()) %>%
+      arrange(desc(as.numeric(estimate)))
+  } else {
+    df3 <- df2 %>%
+      select(Characteristic, estimate, everything()) %>%
+      arrange(desc(as.numeric(estimate)))
+  }
+
+  return(df3)
+}#test_republicans_cancel %>% nice_table() %>% 
+  #kable("latex", booktabs = TRUE) %>%
+  #kable_styling(latex_options = c("scale_down", "hold_position"))
+
+```
+
+```{r}
+
+#this version of the function is for tables with no partisan column
+process_dataframe_np <- function(df) {
+  processed_df <- df %>%
+    arrange(desc(estimate)) %>% 
+    select(-statistic, -feature, -outcome) %>%
+    mutate(
+      # good labels for variables
+      Characteristic = case_when(
+        level == "Just Cancelled" ~ "Neutral framing of cancelation (relative to partisan)",
+        level == "Grad School" ~ "Grad School (relative to First Gen student)",
+        level == "Finished" ~ "Finished Degree (relative to uncompleted)",
+        level == "More likely to be White" ~ "Majority white (relative to majority non-white)",
+        level == "Working" ~ "Working (relative to unemployed)",
+        TRUE ~ NA_character_
+      ),
+      
+      # combining with partisanship
+      good_label = Characteristic,
+      
+      # making good estimate column
+      # with stars
+      Significance = case_when(
+        p < 0.001 ~ "***",
+        p < 0.01 ~ "**",
+        p < 0.05 ~ "*",
+        p < 0.1 ~ "+",
+        TRUE ~ ""
+      ),
+      
+      EstimateWithSymbol = paste0(round(estimate, 3), Significance),
+      
+      good_estimate = paste(EstimateWithSymbol, "\n(", round(std.error, 3), ")", sep = ""),
+      
+      good_upper=round(upper,3),
+      
+      good_lower=round(lower,3)
+
+    ) %>%
+    filter(estimate != 0) %>%
+    select(-estimate, -z, , -level, , -Significance, -EstimateWithSymbol, -Characteristic, -std.error,-lower,-upper) %>%
+    # renaming to be more aesthetically pleasing
+    mutate(
+      Characteristic = good_label,
+      estimate = good_estimate,
+       lower=good_lower,
+      upper=good_upper
+
+    ) %>%
+    dplyr::select(Characteristic, estimate,lower,upper)
+  
+explanation_row <- data.frame(
+    Characteristic = "+ p<0.1, * p<0.05, ** p<0.01, *** p<0.001",
+    estimate = ""
+  )  #%>%
+    #arrange(desc(as.numeric(gsub("[^0-9.]", "", estimate))))
+  
+  result_df <- bind_rows(processed_df, explanation_row)
+  
+  #removing ugly NA    
+  result_df[is.na(result_df)] <-" "
+
+  return(result_df)
+
+   
+   
+}
+
+```
+
+```{r tableAMCEresp}
+full_sample_model_resp <- amce(
+  conjoint,
+  debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working,
+  id = ~ID
+) 
+
+
+display_table <- process_dataframe_np(full_sample_model_resp)
+
+#
+display_table %>% 
+  kable("latex", booktabs = TRUE,caption = "Full Sample, AMCE, Debtor responsibility outcome ") %>%
+  kable_styling(latex_options = c("scale_down", "hold_position"))
+
+ 
+
+```
+
+```{r}
+full_sample_model_resp <- amce(
+  conjoint,
+  debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working,
+  id = ~ID
+) 
+
+
+display_table <- process_dataframe_np(full_sample_model_resp)
+
+#
+display_table %>% 
+  kable("latex", booktabs = TRUE,caption = "Full Sample, AMCE, Debt cancelation outcome ") %>%
+  kable_styling(latex_options = c("scale_down", "hold_position"))
+
+```
+
+```{r}
+#this is a function to make the partisanship tables neat
+# Load the dplyr package
+
+# Define the function
+process_dataframe <- function(df) {
+  processed_df <- df %>%
+    arrange(desc(estimate)) %>% 
+    select(-statistic, -feature, -outcome) %>%
+    mutate(
+      # good labels for variables
+      Characteristic = case_when(
+        level == "Just Cancelled" ~ "Neutral framing of cancelation (relative to partisan)",
+        level == "Grad School" ~ "Grad School (relative to First Gen student)",
+        level == "Finished" ~ "Finished Degree (relative to uncompleted)",
+        level == "More likely to be White" ~ "Majority white (relative to majority non-white)",
+        level == "Working" ~ "Working (relative to unemployed)",
+        TRUE ~ NA_character_
+      ),
+      
+      # combining with partisanship
+      good_label = paste0(Characteristic, ", ", BY),
+      
+      # making good estimate column
+      # with stars
+      Significance = case_when(
+        p < 0.001 ~ "***",
+        p < 0.01 ~ "**",
+        p < 0.05 ~ "*",
+        p < 0.1 ~ "+",
+        TRUE ~ ""
+      ),
+      
+      EstimateWithSymbol = paste0(round(estimate, 3), Significance),
+      
+      good_estimate = paste(EstimateWithSymbol, "\n(", round(std.error, 3), ")", sep = ""),
+      
+      good_upper=round(upper,3),
+      
+      good_lower=round(lower,3)
+    ) %>%
+    filter(estimate != 0) %>%
+    select(-estimate, -z, -Partisan, -level, -BY, -Significance, -EstimateWithSymbol, -Characteristic, -std.error,-upper,-lower) %>%
+    # renaming to be more aesthetically pleasing
+    mutate(
+      Characteristic = good_label,
+      estimate = good_estimate,
+      lower=good_lower,
+      upper=good_upper
+    ) %>%
+    dplyr::select(Characteristic, estimate,lower,upper)
+  
+explanation_row <- data.frame(
+    Characteristic = "+ p<0.1, * p<0.05, ** p<0.01, *** p<0.001",
+    estimate = ""
+  )  #%>%
+    #arrange(desc(as.numeric(gsub("[^0-9.]", "", estimate))))
+  
+  result_df <- bind_rows(processed_df, explanation_row)
+  
+  #removing ugly NA    
+  result_df[is.na(result_df)] <-" "
+
+  return(result_df)
+
+   
+   
+}
+
+# Example usage
+# Assuming df is your input dataframe
+# df_processed <- process_dataframe(df)
+
+
+```
+
+```{r}
+mm_by <- cj(conjoint, debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "amce", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent")
+
+display_table <- process_dataframe(mm_by)
+
+
+display_table  %>% 
+  kable("latex", booktabs = TRUE,caption = "Partisan Subsetting, AMCE, Debtor responsibility outcome") %>%
+  kable_styling(latex_options = c("scale_down", "hold_position"))
+
+
+```
+
+```{r}
+mm_by <- cj(conjoint, debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "amce", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent")
+
+
+display_table <- process_dataframe(mm_by)
+
+
+display_table  %>% 
+  kable("latex", booktabs = TRUE,caption = "Partisan Subsetting, AMCE, Debt Cancelation Outcome") %>%
+  kable_styling(latex_options = c("scale_down", "hold_position"))
+
+
+```
+
+```{r}
+test <- mm_by %>% select(-statistic,-feature,-outcome) %>% 
+  mutate(
+    
+    #good labels for variables
+    Characteristic = case_when(
+      level == "Just Cancelled" ~ "Neutral framing of cancelation (relative to partisan)",
+      level == "Grad School" ~ "Grad School (relative to First Gen student)",
+      level == "Finished" ~ "Finished Degree (relative to uncompleted)",
+      level == "More likely to be White" ~ "Majority white (relative to majority non-white)",
+      level == "Working" ~ "Working (relative to unemployed)",
+      TRUE ~ NA_character_
+    ),
+    
+    #combining with partisanship
+    good_label= paste0(Characteristic,", ",BY),
+    
+    #making good estimate column
+    
+    #with stars
+    
+    Significance = case_when(
+    p < 0.001 ~ "***",
+    p < 0.01 ~ "**",
+    p < 0.05 ~ "*",
+    TRUE ~ ""
+  ),
+  
+  EstimateWithSymbol = paste0(round(estimate, 3), Significance),
+
+    
+    good_estimate = paste(EstimateWithSymbol, "\n(", round(std.error, 3), ")", sep = ""),
+  
+
+    ) %>% 
+  
+filter (estimate !=0) %>% select(-estimate,-z,-p,-Partisan,-level,-BY,-Significance,-EstimateWithSymbol,-Characteristic,-std.error) %>% 
+  #renaming to be more asethetically pleasing
+   mutate(
+    
+    Characteristic= good_label,
+    
+    estimate = good_estimate) %>% dplyr::select(Characteristic,estimate,lower,upper)
+  
+  
+```
+
+## Discussion
+
+So, are student debtors perceived as privileged dilettantes selfishly asking for a handout, or victims of circumstances beyond their control? Overall, my findings are mixed. The most significant results are that subjects are generally more sympathetic towards debtors when they are perceived as being first generation students (but not more willing to cancel debt), and that among Republicans the race of debtors impacts willingness to support cancellation. I discuss these results in more detail below.
+
+There is evidence from the CES module for *H1*, the greater need hypothesis. To hold the characteristics that lead to high or low guessing constant, I subset the sample by those who guessed over and those who guessed under the actual percent of first-generation student debtors. Among those who guessed under the "actual" percentage, receiving an information treatment (and thus learning that debtors were potentially a more economically precarious group than they had assumed) was positively associated with reporting warmer feelings towards debtors as a group at statistically significant levels, both with and without covariates. This suggests that seeing debtors as more economically precarious/less privileged engenders more sympathetic attitudes towards them. However, that same module also found that receiving this treatment did *not* lead to more support for debt cancellation, suggesting that while attitudes towards debtors may be impacted by seeing them as more needy, policy preferences regarding them are not.
+
+The evidence from the conjoint experiment was similarly mixed in terms of *H1* and *H2* (the better conduct hypothesis). In terms of preference description, for both outcomes the marginal means mostly showed more preference for characteristics that signaled better conduct (being employed and finishing degree program) rather than ones that signaled greater need. But the differences, both overall and among subgroups, were mostly minor, and the marginal means for being a first generation student were higher for both outcomes. Causally, the AMCE of these characteristics was similarly mixed, with clear evidence for neither hypothesis.
+
+In terms of *H3*, the group attitudes hypotheses, there was some evidence that group attitudes did in fact impact both attitudes towards debtors and willingness to support debt cancellation. Across both outcomes and all subgroups, the marginal means were higher for subjects primed to see debtors as being majority white, compared to majority non-white (albeit very slightly in most cases). Causally, among Republican subjects, race was the only characteristic that appeared to meaningfully impact willingness to support student debt cancellation, with more (less) willingness to support cancellation for white (non-white) debtors.
+
+Finally, I find relatively little evidence for *H4,* the partisan attitudes hypotheses. Partisan framing, both in terms of preference description and causally, did not appear to meaningfully impact either outcome. The one notable exception here is that for the debtor responsibility outcome, marginal means were notably higher for those exposed to a neutral framing of cancellation as opposed to a partisan one..among *Democrats.* While I find relatively little evidence that partisan framing meaningfully impacted outcomes I do find strong evidence that attitudes towards both student debtors and debt cancellation are a priori relatively polarized along partisan lines in terms of preferences.
+
+More broadly, this study finds that student debtors fit into the existing literature on deservingness and welfare attitudes only partially. Consistent with frameworks like CARIN, priming subjects to see debtors as a less privileged group leads some to express warmer feelings and more sympathy towards debtors. However, this increased sympathy does not necessarily translate into greater willingness to support student debt cancellation policies. The results also replicate previous findings that Republicans are less willing to support debt relief for non-white debtors, suggesting racial attitudes play a role. Overall, this research makes an important contribution as the first systematic investigation into how student debtors are socially constructed and perceived in the popular imagination. This advances the literature on deservingness and welfare attitudes by examining how they impact a group that is less unambiguously marginalized compared to traditional welfare recipients.
+
+There are several implications here. First, this serves as a (partial) validation of previous work that manipulated characteristics of individual debtors [@sorelleDeservingnessPoliticsStudent2023; @sorellePoliticalBenefitsStudent2023]. By instead manipulating the characteristics of debtors as a group, I preserve external validity. Unlike this previous work, I do not find any causal effect of characteristics that indicate higher levels of need, such as first-generation status, on either attitudes towards debtors. I do, however, replicate their findings that Republicans are less willing to support debt cancellation for non-white debtors, which is consistent with earlier work on racial attitudes and support for welfare policies.
+
+More broadly, the way in which these findings do not neatly fit the existing literature on the subject means that more work is needed to broaden our understandings of how more socially ambiguous groups such as debtors fit into these frameworks. The findings of this study open up several promising avenues for future research in this area. One potential direction would be to examine the impact of the administration's attempted 2022 student debt cancellation on political attitudes and behaviors, not just for non-debtors, but for student loan borrowers themselves. This could involve conducting survey experiments to isolate the effects of the cancellation attempt on various political outcomes. Additionally, researchers could analyze observational data to track changes in political engagement, voting patterns, or policy preferences among both groups over time.
+
+\newpage
+
+# References
+
+::: {#refs}
+:::
+
+\newpage
+
+# Appendix
+
+```         
+```
+
+```{r}
+setwd("~/Desktop/Grad School/CES 2022")
+#this is the matched data 
+cces <- read_dta("CCES22_UCR_OUTPUT.DTA")
+setwd("/Users/alexanderross/Desktop/Grad School/debt_conjoint 2")
+
+```
+
+```{r}
+#| label: fig-groupchart
+#| fig-cap: "Percentage of Student Debtors that subjects guessed were first generation college students, by subgroup. Dashed line is at 52% (actual percent)."# Pivot longer to get a single category column
+
+#pacman::p_load(tidyverse,DiagrammeR,tidygraph,ggraph,DiagrammeRsvg,rsvg,magrittr,janitor,egg,ggpubr,haven,data.table,modelsummary,naniar,scales,gridExtra,readr,reshape2,hrbrthemes,patchwork,wesanderson,ggthemes,gridExtra)
+
+long_data <- cces_clean %>% 
+  pivot_longer(cols = c(Partisanship, Gender, Race,Education, Debt), names_to = "Category", values_to = "Value") %>%
+  group_by(Category, Value) %>%
+  summarise(AverageDebt = mean(debt_guess,na.rm = TRUE), 
+            DebtSD = sd(debt_guess, na.rm = TRUE),
+            .groups = 'drop') 
+
+# Plotting
+ggplot(long_data, aes(x = Value, y = AverageDebt, fill = Category)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_errorbar(aes(ymin = AverageDebt - DebtSD, ymax = AverageDebt + DebtSD),
+                position = position_dodge(0.9), width = 0.2) +
+  scale_color_economist()+theme_tufte()+
+  labs(title = NULL,
+       x = "Group",
+       y = "Average guess by group, with confidence intervals",
+       fill = "Category") +
+theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1), # Rotate bottom labels
+        legend.position = "none") + # Remove legend
+  facet_grid(~Category, scales = "free_x")+ # Facets for each category
+  geom_hline(yintercept = 52, linetype = "dashed", color = "red")
+```
+
+```{r}
+cces_clean <- cces %>% 
+  filter(UCR343 !=8,) %>%
+  mutate(treated=case_when(QUCR341rand==1~1,
+                           TRUE~0))%>% 
+  mutate(control=case_when(QUCR341rand==2~1,
+                           TRUE~0))%>% 
+  mutate(debt_guess=UCR340) %>% 
+  mutate(debtor_therm=UCR342) %>%
+  #mutate(debt_relief=10-UCR343) %>% 
+  mutate(therm_first=case_when(QUCR342rand==1~1,TRUE~0)) %>% 
+  mutate(relief_first=case_when(QUCR342rand==2~1,TRUE~0)) %>% 
+  mutate(student_debtor=case_when(edloan==1~1,TRUE~0)) %>% 
+  mutate(treat_difference=case_when(control==1~0,
+                                    treated==1~52-debt_guess),
+         treat_guess_high=case_when(treated==1&debt_guess>52~1,TRUE~0),
+         treat_guess_low=case_when(treated==1&debt_guess<52~1,TRUE~0),
+         high_guess=case_when(debt_guess>52~1,TRUE~0),
+         low_guess=case_when(debt_guess<52~1,TRUE~0),
+         treat_size=abs(treat_difference),
+         treat_large=case_when(treat_difference>=10~1, TRUE~0),
+         treat_small=case_when(treat_difference<=10~1, TRUE~0)) %>% 
+  mutate(female = case_when(
+    gender4 ==2~1,
+    TRUE~0)) %>% 
+  mutate(not.white=case_when(
+    race >= 2~1,
+    TRUE~0)) %>% 
+  mutate(reg.democrat=case_when(
+    CC22_360== 2~1,
+    TRUE~0
+  )) %>% 
+  mutate(reg.republican=case_when(
+    CC22_360==3~1,
+    TRUE~0
+  )) %>% #replacing not sure and don't know with NAs, party id scale
+  mutate(dem_to_rep=pid7) %>% 
+  mutate(college.grad=case_when(
+    educ>=4~1,
+    TRUE~0)) %>% 
+  mutate(age=(2022-birthyr)) %>% 
+  mutate(urban=case_when(
+    urbancity==1~1,
+    TRUE~0)) %>% 
+  mutate(rural=case_when(
+    urbancity==4~1,
+    TRUE~0)) %>% 
+  mutate(some.coll=case_when(
+    educ==3~1,
+    TRUE~0)) %>%
+  mutate(two.yr.degree=case_when(
+    educ==4~1,
+    TRUE~0)) %>%
+  mutate(four.yr.degree=case_when(
+    educ==5~1,
+    TRUE~0)) %>%
+  mutate(post.grad=case_when(
+    educ==6~1,
+    TRUE~0)) %>% 
+  mutate(student.debtor=case_when(
+    edloan==1~1,
+    TRUE~0)) %>% 
+  mutate(military=case_when(
+    milstat_1==1~1,
+    milstat_3==1~1,
+    TRUE~0)) %>%
+  mutate(lost_job=case_when(
+    CC22_305_2==1~1,
+    TRUE~0)) %>% 
+  replace_with_na("ideo5", 6) %>% 
+  filter(UCR343!=8) %>% 
+  mutate(debt_relief=UCR343) %>% 
+  #variables for the graph
+  mutate(
+    
+    Partisanship=case_when(pid7 %in% c(1,2,3)~"Democrat",
+                           pid7 %in% c(5,6,7)~"Republican", pid7 %in% c(4,8,9)~"Independent"
+    ),
+    
+    Race= case_when(not.white==1~"Non White",
+                    TRUE~"White"),
+    
+    Debt=case_when(edloan==1~"Debtor",
+                   TRUE~"Non Debtor"),
+    
+    Education=case_when(educ>=4~"At least some college",
+                        TRUE~"No College"),
+    
+    Gender=case_when(female==1~"Female",TRUE~"Male"),
+    
+    `News Interest`=case_when(newsint%in% c(1,2)~"High Interest",TRUE~"Low Interest")
+    
+  ) #%>% filter(debt_guess!=52&debt_guess!=50)
+#cces_clean %>% filter(Partisanship=="Democrat") %>% nrow()
+
+
+
+high_guessers <- filter(cces_clean,high_guess==1)
+low_guessers <- filter(cces_clean,low_guess==1)
+
+
+high_guess_dems <- filter(high_guessers,pid7%in% c(1,2,3))
+low_guess_dems <- filter(low_guessers,pid7%in% c(1,2,3))
+
+high_guess_gop <- filter(high_guessers,pid7 %in% c(5,6,8))
+low_guess_gop <- filter(low_guessers,pid7 %in%  c(5,6,8))
+
+
+
+models <- list(
+  
+  "All"=lm(debtor_therm~treated*relief_first,data=cces_clean),
+  
+  "High Guessers"=lm(debtor_therm~treated*relief_first,data=high_guessers),
+  
+  "Low Guessers"=lm(debtor_therm~treated*relief_first,data=low_guessers),
+  
+  
+  "All"=lm(debtor_therm~treated,data=cces_clean),
+  
+  "High Guessers"=lm(debtor_therm~treated,data=high_guessers),
+  
+  "Low Guessers"=lm(debtor_therm~treated,data=low_guessers)
+  
+  
+)
+
+modelsummary(models,output = "kableExtra",stars = TRUE,gof_omit = gof_omit,title = "Feeling thermometer towards debtors as a group (Matched Data)",
+             
+             coef_rename =coef_rename, notes=note_add("coded 1-100, higher values represent warmer feelings")
+             
+) %>% add_header_above(c(" " = 1, "With Interaction" = 3, "Without Interaction" = 3)) %>% kable_styling(latex_options="scale_down", "striped")
+
+```
+
+```{r tabdebthtermcovars}
+models <- list(
+  
+  "All"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treated,data = cces_clean),
+
+  "Low Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treated,data = low_guessers),
+
+  "High Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treated,data = high_guessers),
+
+  
+    "All"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treated,data = cces_clean),
+
+  "Low Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treated,data = low_guessers),
+
+  "High Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treated,data = high_guessers)
+  
+)
+
+ modelsummary(models,output = "kableExtra",stars = TRUE,gof_omit = gof_omit,title = "Feeling thermometer towards debtors as a group",
+             
+              coef_rename = coef_rename, notes= note_add("coded 1-100, higher values represent warmer feelings")
+            ) %>% add_header_above(c(" " = 1, "With Interaction" = 3, "Without Interaction" = 3))                %>% kable_styling(latex_options = c("scale_down", "hold_position"))
+              
+
+
+```
+
+```{r tabguess}
+
+
+model <- lm(debt_guess~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+newsint,data = cces_clean)
+modelsummary(model, stars = TRUE, gof_omit = gof_omit, output = "latex",
+             title = "Percent of debtors respondent guessed were first generation students",
+             coef_rename = c("dem_to_rep" = "Dem to Rep partisanship", 
+                              "ideo5_new" = "Liberal to conservative ideology",
+                              "not.white" = "Non-white",
+                              "female" = "Female",
+                              "educ" = "Education level",
+                              "faminc_new" = "Family income",
+                              "student.debtor" = "Student debtor",
+                              "newsint" = "Attention to news"))
+```
+
+```{r}
+models <- list(
+  
+  "All"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treated,data = cces_clean),
+
+  "Low Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treated,data = low_guessers),
+
+  "High Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treated,data = high_guessers),
+
+  
+    "All"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treated,data = cces_clean),
+
+  "Low Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treated,data = low_guessers),
+
+  "High Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treated,data = high_guessers)
+  
+)
+
+modelsummary(models,output = "kableExtra",stars = TRUE,gof_omit = gof_omit,title = "Support for canceling debt",
+             
+             
+             coef_rename = c("dem_to_rep" = "Dem to Rep partisanship", 
+                              "ideo5_new" = "Liberal to conservative ideology",
+                              "not.white" = "Non-white",
+                              "female" = "Female",
+                              "educ" = "Education level",
+                              "faminc_new" = "Family income",
+                              "student.debtor" = "Student debtor",
+                              "newsint" = "Attention to news",
+                              "relief_first" = "Asked about relief first",
+                              "relief_first:treated" = "Treatment x Relief order",
+                              "treated" = "Treatment condition")
+             
+             
+             
+             
+             ) %>% add_header_above(c(" " = 1, "With Interaction" = 3, "Without Interaction" = 3)) %>% 
+              kable_styling(latex_options = c("scale_down", "hold_position"))
+
+```
+
+```         
+```
+
+```{r}
+models <- list(
+  
+                "All"=lm(debt_relief~treated*relief_first,data=cces_clean),
+  
+                "High Guessers"=lm(debt_relief~treated*relief_first,data=high_guessers),
+               
+               "Low Guessers"=lm(debt_relief~treated*relief_first,data=low_guessers),
+               
+               
+               "All"=lm(debt_relief~treated,data=cces_clean),
+  
+                "High Guessers"=lm(debt_relief~treated,data=high_guessers),
+               
+               "Low Guessers"=lm(debt_relief~treated,data=low_guessers)
+               
+               )
+               
+#modelplot_custom(models)
+
+#modelsummary(models)
+
+modelsummary(models,output = "kableExtra",stars = TRUE,gof_omit = gof_omit,title = "Support for debt relief (Matched Data)",
+             
+              coef_rename = c("treated" = "Treated with new information",
+                              "relief_first" = "Asked about relief first",
+                              "treated:relief_first" = "Treatment x Relief first")
+             
+             
+             
+             ) %>%add_header_above(c(" " = 1, "With Interaction" = 3, "Without Interaction" = 3))%>% kable_styling(latex_options="scale_down","striped")  
+             
+
+```
+
+```{r}
+#| label: fig-minGraph
+#| fig-cap: "Marginal Means for both outcomes"
+#| message: false
+#| warning: false
+#| results: hide
+#There can ONLY BE ONE FIGURE PER CHUNK IF YOU WANT THE LABEL TO WORK
+
+responsibility_mm <- plot_mm(conjoint,responsibility_formula)+theme(axis.title.x = element_blank(), panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid"))+ labs(caption = "Debtors Bearing Responsibility")+ scale_y_discrete(labels = function(labels) gsub("treat_", "", labels))
+
+cancel_mm <- plot_mm(conjoint,cancel_formula)+theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank(),
+
+    panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid"))+ labs(caption = "Support for cancelation") + theme(plot.caption = element_text(hjust = 0.5))
+
+library(gridExtra) 
+combined_plot <- grid.arrange(responsibility_mm, cancel_mm, ncol = 2)
+
+combined_plot
+```
+
+```{r}
+#| label: fig-mmpartisanresponsible
+#| fig-cap: "Marginal means by partisanship"
+#| message: false
+#| warning: false
+#| results: hide
+
+responsible_mm_partisan <- cj(conjoint, debtors_not_responsible ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "mm", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent")
+
+
+
+
+responsible_mm_partisan <- plot(responsible_mm_partisan, group = "Partisan", vline = 0)+theme_tufte()+scale_color_few()+theme(axis.title.x = element_blank(),
+             panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid")                                                       
+        )+ labs(caption = "Debtors Bearing Responsibility")+
+  scale_y_discrete(labels = function(labels) gsub("treat_", "", labels))+ theme(legend.position = "none")
+
+
+cancel_mm_partisan <- cj(conjoint, debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "mm", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent")
+
+cancel_mm_partisan <- plot(cancel_mm_partisan, group = "Partisan", vline = 0)+theme_tufte()+scale_color_few()+theme(axis.title.y = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_blank(),
+
+        panel.background = element_rect(fill = "transparent", colour = "black", linetype = "solid"))+ labs(caption = "Support for cancelation") + theme(plot.caption = element_text(hjust = 0.5))
+
+
+combined_plot <- grid.arrange(responsible_mm_partisan, cancel_mm_partisan, ncol = 2)
+
+combined_plot
+
+
+```
+
+```         
+```
+
+```{r}
+mm_all_cancel <- cj(conjoint, debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "mm") %>% mutate (Partisan = "All")
+
+cancel_mm_partisan <- cj(conjoint, debt_cancel ~ treat_biden + treat_school +treat_finish + treat_race +treat_working, estimate = "mm", by = ~Partisan) %>% filter(Partisan!="Other/Indepdent") %>% select(-BY)
+
+
+test <- rbind(mm_all_cancel,cancel_mm_partisan)
+#View(test)
+
+
+library(dplyr)
+library(tidyr)
+
+# Reshape data to long format
+data_long <- test %>%
+  pivot_longer(cols = estimate:upper, names_to = "metric", values_to = "value") %>%
+  select(Partisan, feature, level, metric, value)
+
+# Calculate mean for each combination of Partisan, feature, and level
+means <- data_long %>%
+  group_by(Partisan, feature, level, metric) %>%
+  summarise(mean_value = mean(value, na.rm = TRUE), .groups = "drop")
+
+# Spread the means to wide format
+table_data <- means %>%
+  pivot_wider(names_from = metric, values_from = mean_value)
+
+# Print the table
+tab_data <- table_data %>%
+  select(Partisan,level, estimate, `std.error`, z, p, lower, upper) %>%
+  pivot_wider(names_from = Partisan, values_from = c(estimate, `std.error`, z, p, lower, upper)) %>%
+  rename(`Level` = level) %>%
+  select(`Level`, starts_with("estimate"), starts_with("std.error"), starts_with("z"), starts_with("p"), starts_with("lower"), starts_with("upper")) #%>%
+  
+  #print(row.names = FALSE)
+
+tab_data2 <- tab_data %>% 
+  mutate(
+    Condition= Level,
+    
+    All=paste0(round(estimate_All,2)," (",round(std.error_All,3),")"),
+    
+    Democrats =paste0(round(estimate_Democrat,2)," (",round(std.error_Democrat,3),")"),
+    
+    Republicans =paste0(round(estimate_Republican,2)," (",round(std.error_Republican,3),")")
+    
+  ) %>% select(Condition,All,Democrats, Republicans)
+
+tab_data2 %>%   kable("latex", booktabs = TRUE,caption = "Marginal Means by subgroup, Support for debt cancelation") %>%kable_styling(latex_options = c("scale_down", "hold_position"))#%>%
+#kable_styling(full_width = FALSE, width = "15cm")  #kable_styling(font_size = 8) %>%
+ # column_spec(column = 1, bold = TRUE) %>%
+  #escape(lineheight = 0.2) %>%
+ # row_spec(0, angle = 0)
+
+```
+
+```{r tableAMCEcancel}
+
+
+
+  
+#library(kableExtra)
+
+#library(kableExtra)
+
+ #Assuming the bottom table is a data frame called 'bottom_table'
+#bottom_table_formatted <- test %>%
+  #rename(Characteristic = 1, Estimate = 2, `Std.Error` = 3, `z` = 4, `p` = 5, Lower = 6, Upper = 7) %>%
+  #mutate(`P` = case_when(
+    #`p` < 0.001 ~ "***",
+    #`p` < 0.01 ~ "**",
+    #`p` < 0.05 ~ "*",
+    #TRUE ~ as.character(`p`)
+  #)) %>%
+ # select(-p,-Upper,-Lower) %>%
+  #kbl(digits = c(0, 6, 6, 6, 0, 6, 6, 0), align = "c") %>%
+ # kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE, position = "left") %>%
+ ## add_header_above(c( "   " = 1, "   " = 1, "   " = 1, "   " = 1, "   " = 1)) %>%
+  #row_spec(0, bold = TRUE, align = "l") 
+
+#bottom_table_formatted#custom_plot(full_sample_model_cancel) + 
+  #labs(title = "Cancel Debt, Full Sample",caption = cancel_caption)
+
+#ggsave("whole_sample_cancel.pdf")
+
+```
+
+```{r}
+models <- list(
+  
+  "All"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treat_size,data = cces_clean),
+
+  "Low Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treat_size,data = low_guessers),
+
+  "High Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treat_size,data = high_guessers),
+
+  
+    "All"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treat_size,data = cces_clean),
+
+  "Low Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treat_size,data = low_guessers),
+
+  "High Guessers"=lm(debtor_therm~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treat_size,data = high_guessers)
+  
+)
+
+ modelsummary(models,output = "kableExtra",stars = TRUE,gof_omit = gof_omit,title = "Feeling thermometer towards debtors as a group",
+             
+              coef_rename = c("dem_to_rep" = "Dem to Rep partisanship", 
+                              "ideo5_new" = "Liberal to conservative ideology",
+                              "not.white" = "Non-white",
+                              "female" = "Female",
+                              "educ" = "Education level",
+                              "faminc_new" = "Family income",
+                              "student.debtor" = "Student debtor",
+                              "newsint" = "Attention to news",
+                              "relief_first" = "Asked about relief first",
+                              "relief_first:treat_size" = "Treatment x Relief order",
+                              "treat_size" = "Difference between guessed and actual")
+             )%>%add_header_above(c(" " = 1, "With Interaction" = 3, "Without Interaction" = 3)) %>%               kable_styling(latex_options = c("scale_down", "hold_position"))
+
+
+```
+
+```{r}
+models <- list(
+  
+  "All"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treat_size,data = cces_clean),
+
+  "Low Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treat_size,data = low_guessers),
+
+  "High Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+relief_first*treat_size,data = high_guessers),
+
+  
+    "All"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treat_size,data = cces_clean),
+
+  "Low Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treat_size,data = low_guessers),
+
+  "High Guessers"=lm(debt_relief~dem_to_rep+ideo5_new+not.white+female+educ+faminc_new+student.debtor+treat_size,data = high_guessers)
+  
+)
+
+ modelsummary(models,output = "kableExtra",stars = TRUE,gof_omit = gof_omit,title = "Support for debt cancelation",
+             
+              coef_rename = c("dem_to_rep" = "Dem to Rep partisanship", 
+                              "ideo5_new" = "Liberal to conservative ideology",
+                              "not.white" = "Non-white",
+                              "female" = "Female",
+                              "educ" = "Education level",
+                              "faminc_new" = "Family income",
+                              "student.debtor" = "Student debtor",
+                              "newsint" = "Attention to news",
+                              "relief_first" = "Asked about relief first",
+                              "relief_first:treat_size" = "Treatment x Relief order",
+                              "treat_size" = "Difference between guessed and actual")
+             )%>%add_header_above(c(" " = 1, "With Interaction" = 3, "Without Interaction" = 3)) %>%
+              kable_styling(latex_options = c("scale_down", "hold_position"))
+
+
+```
+
+# Supplementary Appendix
+
+```{r}
+#| label: tbl-tabmlogit
+#| tbl-cap: "Multinomial Logit model of Treatment Assignment for CES Module"
+#| echo: false
+
+pacman::p_load(mlogit)
+mlogit_data <- mlogit.data(cces_clean, choice = "treated", shape = "wide")
+mlogit_model <- mlogit(treated ~ 1 | age + female + not.white + dem_to_rep + college.grad +faminc_new, data = mlogit_data)
+modelsummary(mlogit_model,
+             output = "kableExtra",
+             stars = TRUE,
+             gof_omit = gof_omit,
+             coef_rename = c("age" = "Age",
+                             "female" = "Female",
+                             "faminc_new" = "Income",
+                             "college.grad"="College Graduate",
+                             "dem_to_rep"="Partisanship (Dem to Rep)",
+                             "not.white"="Non White")) %>% 
+  kable_styling(latex_options="scale_down", "striped")
+```

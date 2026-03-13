@@ -1,0 +1,585 @@
+---
+title: "Housing Benefit Analysis"
+subtitle: "Payment Timing and Government Attitudes"
+format:
+  html:
+    toc: true
+    number-sections: true
+    code-fold: true
+  pdf:
+    toc: true
+    number-sections: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Setup
+
+```{r packages}
+rm(list = ls())
+
+pacman::p_load(
+
+  tidyverse,
+  lubridate,
+  fixest,
+  modelsummary,
+  knitr
+)
+```
+
+```{r load-data}
+df <- readRDS("df_full_panel_both_samples.rds")
+cat("Loaded:", nrow(df), "observations,", ncol(df), "variables\n")
+```
+
+# Data Preparation
+
+## Outcome Variables
+
+All outcomes are 0-10 scales where higher = more of the construct.
+
+```{r outcomes}
+df <- df %>%
+  mutate(
+    trust_qc = as.numeric(trust_qcgov),
+    trust_can = as.numeric(trust_cangov),
+    attachment_qc = as.numeric(attach_qc),
+    attachment_can = as.numeric(attach_can),
+    financial_satisf = as.numeric(current_financialsatisf),
+    imp_qcvalues = as.numeric(imp_qcvalues)
+  )
+
+# Summary
+outcomes_summary <- df %>%
+  summarise(
+    across(
+      c(trust_qc, trust_can, attachment_qc, attachment_can, financial_satisf, imp_qcvalues),
+      list(n = ~sum(!is.na(.)), mean = ~mean(., na.rm = TRUE), sd = ~sd(., na.rm = TRUE)),
+      .names = "{.col}_{.fn}"
+    )
+  ) %>%
+  pivot_longer(everything(), names_to = c("variable", "stat"), names_sep = "_(?=[^_]+$)") %>%
+  pivot_wider(names_from = stat, values_from = value)
+
+kable(outcomes_summary, digits = 2, caption = "Outcome Variables Summary")
+```
+
+## Survey Timing
+
+```{r timing}
+df <- df %>%
+  mutate(
+    survey_datetime = as.POSIXct(startdate),
+    survey_date = as.Date(survey_datetime),
+    day_of_month = day(survey_datetime),
+    month = month(survey_datetime),
+    year = year(survey_datetime)
+  )
+
+cat("Day of month distribution:\n")
+print(table(df$day_of_month))
+```
+
+## Proximity to Day 28 (Housing Benefit Payment)
+
+```{r proximity}
+# Function to calculate distance to a fixed payment day
+calc_payment_proximity <- function(survey_day, payment_day, days_in_month = 30) {
+  if (survey_day >= payment_day) {
+    days_since <- survey_day - payment_day
+    days_until <- (days_in_month - survey_day) + payment_day
+  } else {
+    days_since <- (days_in_month - payment_day) + survey_day
+    days_until <- payment_day - survey_day
+  }
+  circular <- min(days_since, days_until)
+  return(list(days_since = days_since, days_until = days_until, circular = circular))
+}
+
+# Vectorized version
+calc_proximity_vec <- function(survey_days, payment_day, days_in_month = 30) {
+  n <- length(survey_days)
+  days_since <- numeric(n)
+  days_until <- numeric(n)
+
+  for (i in seq_len(n)) {
+    if (is.na(survey_days[i])) {
+      days_since[i] <- NA
+      days_until[i] <- NA
+    } else {
+      result <- calc_payment_proximity(survey_days[i], payment_day, days_in_month)
+      days_since[i] <- result$days_since
+      days_until[i] <- result$days_until
+    }
+  }
+  circular <- pmin(days_since, days_until)
+  return(data.frame(days_since = days_since, days_until = days_until, circular = circular))
+}
+
+# Calculate proximity to 28th
+prox_28 <- calc_proximity_vec(df$day_of_month, payment_day = 28)
+df$prox_28_since <- prox_28$days_since
+df$prox_28_until <- prox_28$days_until
+df$prox_28_circ <- prox_28$circular
+
+cat("Proximity to 28th (Housing Benefit):\n")
+cat("Days since:", summary(df$prox_28_since), "\n")
+cat("Days until:", summary(df$prox_28_until), "\n")
+cat("Circular:", summary(df$prox_28_circ), "\n")
+```
+
+## Housing Benefit Status
+
+Panel propagation logic: if someone reports receiving a benefit in ANY wave, code them as beneficiary in ALL waves, UNLESS they select "None of these programs" in that specific wave.
+
+```{r beneficiary}
+# Raw indicator
+df$raw_mprog_housingbnft <- ifelse(!is.na(df$mprog_housingbnft), 1, 0)
+
+# "None of these programs" indicator
+df$selected_none <- ifelse(!is.na(df$mprog_none), 1, 0)
+
+# Get IDs who ever reported housing benefit
+ever_housing <- df %>%
+  filter(raw_mprog_housingbnft == 1) %>%
+  pull(ID) %>%
+  unique()
+
+# Create beneficiary variable with propagation
+df <- df %>%
+  mutate(
+    ben_housingbnft = case_when(
+      selected_none == 1 ~ 0,
+      ID %in% ever_housing ~ 1,
+      TRUE ~ 0
+    )
+  )
+
+cat("Housing Benefit Status:\n")
+print(table(df$ben_housingbnft, useNA = "ifany"))
+cat("\nBy immigrant status:\n")
+print(table(Housing = df$ben_housingbnft, Immigrant = df$immigrant))
+```
+
+# Panel Fixed Effects Models (Circular Distance)
+
+These models use `prox_28_circ` — circular distance to payment date (0-15, min of days since/until).
+
+## Trust in Quebec Government
+
+```{r fe-trust-qc}
+# All observations
+m_all <- feols(trust_qc ~ prox_28_circ | ID, data = df)
+
+# Beneficiaries only
+m_ben <- feols(trust_qc ~ prox_28_circ | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+
+# Non-beneficiaries (placebo)
+m_noben <- feols(trust_qc ~ prox_28_circ | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+
+# Immigrant beneficiaries
+m_imm_ben <- feols(trust_qc ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+
+# Immigrant non-beneficiaries
+m_imm_noben <- feols(trust_qc ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+
+# Non-immigrant beneficiaries
+m_nat_ben <- feols(trust_qc ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+
+# Non-immigrant non-beneficiaries
+m_nat_noben <- feols(trust_qc ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_circ" = "Circular Distance (Days)"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Trust in QC Government ~ Circular Distance to Payment (Day 28)"
+)
+```
+
+## Trust in Canadian Government
+
+```{r fe-trust-can}
+m_all <- feols(trust_can ~ prox_28_circ | ID, data = df)
+m_ben <- feols(trust_can ~ prox_28_circ | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(trust_can ~ prox_28_circ | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(trust_can ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(trust_can ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(trust_can ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(trust_can ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_circ" = "Circular Distance (Days)"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Trust in Canadian Government ~ Circular Distance to Payment (Day 28)"
+)
+```
+
+## Attachment to Quebec
+
+```{r fe-attach-qc}
+m_all <- feols(attachment_qc ~ prox_28_circ | ID, data = df)
+m_ben <- feols(attachment_qc ~ prox_28_circ | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(attachment_qc ~ prox_28_circ | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(attachment_qc ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(attachment_qc ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(attachment_qc ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(attachment_qc ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_circ" = "Circular Distance (Days)"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Attachment to QC ~ Circular Distance to Payment (Day 28)"
+)
+```
+
+## Financial Satisfaction
+
+```{r fe-financial}
+m_all <- feols(financial_satisf ~ prox_28_circ | ID, data = df)
+m_ben <- feols(financial_satisf ~ prox_28_circ | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(financial_satisf ~ prox_28_circ | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(financial_satisf ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(financial_satisf ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(financial_satisf ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(financial_satisf ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_circ" = "Circular Distance (Days)"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Financial Satisfaction ~ Circular Distance to Payment (Day 28)"
+)
+```
+
+## Importance of Quebec Values
+
+```{r fe-qcvalues}
+m_all <- feols(imp_qcvalues ~ prox_28_circ | ID, data = df)
+m_ben <- feols(imp_qcvalues ~ prox_28_circ | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(imp_qcvalues ~ prox_28_circ | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(imp_qcvalues ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(imp_qcvalues ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(imp_qcvalues ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(imp_qcvalues ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_circ" = "Circular Distance (Days)"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Importance of Quebec Values ~ Circular Distance to Payment (Day 28)"
+)
+```
+
+## Attachment to Canada
+
+```{r fe-attach-can}
+m_all <- feols(attachment_can ~ prox_28_circ | ID, data = df)
+m_ben <- feols(attachment_can ~ prox_28_circ | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(attachment_can ~ prox_28_circ | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(attachment_can ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(attachment_can ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(attachment_can ~ prox_28_circ | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(attachment_can ~ prox_28_circ | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_circ" = "Circular Distance (Days)"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Attachment to Canada ~ Circular Distance to Payment (Day 28)"
+)
+```
+
+# Panel Fixed Effects Models (Days Since Payment)
+
+These models use `prox_28_since` — directional measure of days elapsed since last payment (0-29).
+
+## Trust in Quebec Government
+
+```{r fe-since-trust-qc}
+m_all <- feols(trust_qc ~ prox_28_since | ID, data = df)
+m_ben <- feols(trust_qc ~ prox_28_since | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(trust_qc ~ prox_28_since | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(trust_qc ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(trust_qc ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(trust_qc ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(trust_qc ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_since" = "Days Since Payment"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Trust in QC Government ~ Days Since Payment (Day 28)"
+)
+```
+
+## Trust in Canadian Government
+
+```{r fe-since-trust-can}
+m_all <- feols(trust_can ~ prox_28_since | ID, data = df)
+m_ben <- feols(trust_can ~ prox_28_since | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(trust_can ~ prox_28_since | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(trust_can ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(trust_can ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(trust_can ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(trust_can ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_since" = "Days Since Payment"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Trust in Canadian Government ~ Days Since Payment (Day 28)"
+)
+```
+
+## Attachment to Quebec
+
+```{r fe-since-attach-qc}
+m_all <- feols(attachment_qc ~ prox_28_since | ID, data = df)
+m_ben <- feols(attachment_qc ~ prox_28_since | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(attachment_qc ~ prox_28_since | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(attachment_qc ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(attachment_qc ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(attachment_qc ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(attachment_qc ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_since" = "Days Since Payment"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Attachment to QC ~ Days Since Payment (Day 28)"
+)
+```
+
+## Financial Satisfaction
+
+```{r fe-since-financial}
+m_all <- feols(financial_satisf ~ prox_28_since | ID, data = df)
+m_ben <- feols(financial_satisf ~ prox_28_since | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(financial_satisf ~ prox_28_since | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(financial_satisf ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(financial_satisf ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(financial_satisf ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(financial_satisf ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_since" = "Days Since Payment"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Financial Satisfaction ~ Days Since Payment (Day 28)"
+)
+```
+
+## Importance of Quebec Values
+
+```{r fe-since-qcvalues}
+m_all <- feols(imp_qcvalues ~ prox_28_since | ID, data = df)
+m_ben <- feols(imp_qcvalues ~ prox_28_since | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(imp_qcvalues ~ prox_28_since | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(imp_qcvalues ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(imp_qcvalues ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(imp_qcvalues ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(imp_qcvalues ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_since" = "Days Since Payment"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Importance of Quebec Values ~ Days Since Payment (Day 28)"
+)
+```
+
+## Attachment to Canada
+
+```{r fe-since-attach-can}
+m_all <- feols(attachment_can ~ prox_28_since | ID, data = df)
+m_ben <- feols(attachment_can ~ prox_28_since | ID,
+               data = df %>% filter(ben_housingbnft == 1))
+m_noben <- feols(attachment_can ~ prox_28_since | ID,
+                 data = df %>% filter(ben_housingbnft == 0))
+m_imm_ben <- feols(attachment_can ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == TRUE))
+m_imm_noben <- feols(attachment_can ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == TRUE))
+m_nat_ben <- feols(attachment_can ~ prox_28_since | ID,
+                   data = df %>% filter(ben_housingbnft == 1 & immigrant == FALSE))
+m_nat_noben <- feols(attachment_can ~ prox_28_since | ID,
+                     data = df %>% filter(ben_housingbnft == 0 & immigrant == FALSE))
+
+modelsummary(
+  list("All" = m_all,
+       "Beneficiaries" = m_ben,
+       "Non-Ben (Placebo)" = m_noben,
+       "Imm + Ben" = m_imm_ben,
+       "Imm + Non-Ben" = m_imm_noben,
+       "Native + Ben" = m_nat_ben,
+       "Native + Non-Ben" = m_nat_noben),
+  stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
+  coef_rename = c("prox_28_since" = "Days Since Payment"),
+  gof_map = c("nobs", "r.squared.within", "FE: ID"),
+  title = "Attachment to Canada ~ Days Since Payment (Day 28)"
+)
+```
+
+# Summary
+
+```{r summary-stats}
+cat("=== SAMPLE SIZES ===\n")
+cat("Total observations:", nrow(df), "\n")
+cat("Housing benefit recipients:", sum(df$ben_housingbnft == 1), "\n")
+cat("Non-recipients:", sum(df$ben_housingbnft == 0), "\n")
+cat("\nBy immigrant status:\n")
+cat("Immigrant beneficiaries:", sum(df$ben_housingbnft == 1 & df$immigrant == TRUE, na.rm = TRUE), "\n")
+cat("Immigrant non-beneficiaries:", sum(df$ben_housingbnft == 0 & df$immigrant == TRUE, na.rm = TRUE), "\n")
+cat("Native beneficiaries:", sum(df$ben_housingbnft == 1 & df$immigrant == FALSE, na.rm = TRUE), "\n")
+cat("Native non-beneficiaries:", sum(df$ben_housingbnft == 0 & df$immigrant == FALSE, na.rm = TRUE), "\n")
+```
