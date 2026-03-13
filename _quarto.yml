@@ -40,7 +40,7 @@ website:
 format:
   html:
     theme:
-      light: [solar, custom.scss]
+      dark: [solar, custom.scss]
     css: custom.css
     toc: false
     page-layout: full
