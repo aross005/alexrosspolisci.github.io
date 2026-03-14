@@ -2,7 +2,7 @@
 title: "Curriculum Vitae"
 ---
 
-*This is my academic CV. Professional resume available upon request.*
+*This is my Academic CV. My professional resume is available upon request.*
 
 [Download CV (PDF)](files/Alex_CV.pdf){.btn .btn-primary}
 
