@@ -29,9 +29,9 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 ├── resume.qmd           # Embeds resume PDF (unlisted, noindex)
 ├── projects.qmd         # Research & publications
 ├── contact.qmd          # Contact info
-├── custom.scss          # Theme styling (colors, navbar, sections)
+├── custom.scss          # Theme styling (typography, layout - no color overrides)
 ├── custom.css           # Additional CSS
-├── website_helpers.Rmd  # R helper functions for updating site
+├── website_helpers.Rmd  # R helper functions for updating site (local only, not in repo)
 ├── images/
 │   └── headshot.jpeg    # Professional photo
 ├── files/
@@ -51,7 +51,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 - **Domain registrar:** WordPress.com
 - **Live domain:** alexrosspolisci.com
 - **Quarto version:** 1.3.450
-- **Theme:** Journal (Bootswatch)
+- **Theme:** Solar (Bootswatch dark theme)
 - **Unlisted resume:** alexrosspolisci.com/resume.html (not linked, has noindex)
 
 ---
@@ -81,7 +81,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 | Update contact info | `contact.qmd` |
 | Change site styling | `custom.scss` or `custom.css` |
 | Change nav/footer | `_quarto.yml` |
-| Change theme | `_quarto.yml` (format > html > theme) |
+| Change theme | `_quarto.yml` (format > html > theme) - avoid color overrides in custom.scss |
 
 ---
 
