@@ -14,7 +14,7 @@ With Daniel R. Biggers. *Electoral Studies*, 2023.
 
 ### Naturalistic Data and Political Attitudes
 
-I am currently working on a series of projects that use naturalistic data from online platforms — particularly Yelp and Google Reviews — to capture political attitudes and behaviors as they occur organically, outside of traditional survey settings.
+I am currently working on a series of projects that use naturalistic data from online platforms, particularly Yelp and Google Reviews, to capture political attitudes and behaviors as they occur organically, outside of traditional survey settings.
 
 **Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants** (with Adam Hobbs and Loren Collingwood) examines how partisan and racial attitudes manifest in online reviews of Mexican restaurants, using Yelp data to capture affective polarization in everyday consumer behavior. *Under review.*
 
