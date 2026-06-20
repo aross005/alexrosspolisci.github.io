@@ -10,11 +10,19 @@ With Daniel R. Biggers. *Electoral Studies*, 2023.
 
 ---
 
-## Current Project
+## Current Projects
+
+### Naturalistic Data and Political Attitudes
+
+I am currently working on a series of projects that use naturalistic data from online platforms — particularly Yelp and Google Reviews — to capture political attitudes and behaviors as they occur organically, outside of traditional survey settings.
+
+**Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants** (with Adam Hobbs and Loren Collingwood) examines how partisan and racial attitudes manifest in online reviews of Mexican restaurants, using Yelp data to capture affective polarization in everyday consumer behavior. *Under review.*
+
+**BLM Protests and Online Reviews of Black-Owned Businesses** (with Adam Hobbs and Deren Onursal) investigates whether Black Lives Matter protests generate solidarity or backlash toward Black-owned businesses, using Yelp and Google Reviews data matched with protest event data from ACLED. We find that Black-owned businesses receive significantly higher ratings following nearby BLM protests, with effects that are temporally proximate and geographically local. *In progress.*
 
 ### PASI (Programme d'accompagnement et de soutien à l'intégration)
 
-I am currently working with a novel panel dataset on recent immigrants to Quebec, collected during my postdoctoral appointment at Université Laval. This project, funded by MIFI (Quebec's immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.
+I am also working with a novel panel dataset on recent immigrants to Quebec, collected during my postdoctoral appointment at Université Laval. This project, funded by MIFI (Quebec's immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.
 
 This is the first panel dataset on political attitudes composed exclusively of recently arrived immigrants in Canada or the US.
 
