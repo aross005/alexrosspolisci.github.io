@@ -36,7 +36,8 @@ Before grad school, I served with AmeriCorps in South-Central Los Angeles and br
 - Immigration and immigrant political attitudes (American and comparative)
 - Political behavior (comparative)
 - Inequality
-- Text as data and survey methodology
+- Online political behavior
+- Text as data, social media data, and survey methodology
 
 ## Education
 

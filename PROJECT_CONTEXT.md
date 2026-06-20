@@ -3,7 +3,7 @@
 ## Overview
 Personal academic website built with Quarto, deployed to GitHub Pages.
 
-## Status: COMPLETE AND LIVE
+## Status: LIVE (updated June 2026)
 
 **Live URL:** https://alexrosspolisci.com
 
@@ -57,16 +57,18 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 ---
 
 ## Current Site Content
-- **Bio:** Postdoctoral researcher at Université Laval working on PASI immigrant integration study. PhD from UC Riverside 2024 (dissertation on politics of student loan debt). MPP from UC Riverside School of Public Policy. AmeriCorps alum (South-Central LA), taught English in Beijing.
+- **Bio:** Was most recently a postdoctoral researcher at Université Laval (ended March 2026), working on PASI immigrant integration study. PhD from UC Riverside 2024 (dissertation on politics of student loan debt). MPP from UC Riverside School of Public Policy. AmeriCorps alum (South-Central LA), taught English in Beijing.
 - **Research interests:**
   - Personal debt and political behavior (American)
   - Immigration and immigrant political attitudes (American and comparative)
   - Political behavior (comparative)
   - Inequality
-  - Text as data and survey methodology
+  - Online political behavior
+  - Text as data, social media data, and survey methodology
 - **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
-- **Current project:** PASI (immigrant integration panel study at Université Laval)
-- **Working papers:** 8 papers listed with co-authors and conference presentations
+- **Under review:** 4 papers (Deserving Debtors, Buying Love, Group Threat & Solidarity/Yelp, Home Sweet Home/FREI)
+- **Current project:** PASI (immigrant integration panel study, data from Université Laval postdoc)
+- **Working papers:** 5 papers listed with co-authors and conference presentations
 
 ---
 
