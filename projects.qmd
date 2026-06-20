@@ -14,34 +14,37 @@ With Daniel R. Biggers. *Electoral Studies*, 2023.
 
 ### PASI (Programme d'accompagnement et de soutien à l'intégration)
 
-I am currently working at Université Laval on a project analyzing a novel panel dataset on recent immigrants to Quebec. This project, funded by MIFI (Quebec's immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.
+I am currently working with a novel panel dataset on recent immigrants to Quebec, collected during my postdoctoral appointment at Université Laval. This project, funded by MIFI (Quebec's immigration government agency), surveys participants recruited through administrative data to study the impact of initial experiences on later political and social integration and political attitudes.
 
 This is the first panel dataset on political attitudes composed exclusively of recently arrived immigrants in Canada or the US.
 
 ---
 
-## Working Papers & Conference Presentations
+## Under Review
 
 **Deserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors**
-*Presented at APSA 2023 | Currently under review*
 
 ---
+
+**Buying Love**
+
+---
+
+**Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants**
+With Adam Hobbs and Loren Collingwood
+
+---
+
+**Home Sweet Home? Foreign Real Estate Investment and Redistributive Preferences**
+With Adam Hobbs
+
+---
+
+## Working Papers & Conference Presentations
 
 **Participating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs' Use and Impacts**
 With Valérie-Anne Mahéo and Thomas Gareau-Paquette
 *Presented at CPSA 2025*
-
----
-
-**Yelp Stars and Partisan Stripes: Evidence of Affective Polarization in Online Business Reviews**
-With Adam Hobbs and Loren Collingwood
-*Forthcoming at MPSA 2026*
-
----
-
-**Housing Shocks and Redistributive Preferences**
-With Adam Hobbs
-*Presented at MPSA 2024 & APSA 2025*
 
 ---
 
