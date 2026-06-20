@@ -1,10 +1,80 @@
 [
   {
-    "objectID": "resume.html",
-    "href": "resume.html",
-    "title": "Resume",
+    "objectID": "teaching.html",
+    "href": "teaching.html",
+    "title": "Teaching",
     "section": "",
-    "text": "Download Resume (PDF)"
+    "text": "Regulation: A Political Perspective (2024)\nPolitics of the Underdeveloped World (2023)\nAmerican Politics (2022)\nMoney in Politics (2021)"
+  },
+  {
+    "objectID": "teaching.html#instructor-of-record-uc-riverside",
+    "href": "teaching.html#instructor-of-record-uc-riverside",
+    "title": "Teaching",
+    "section": "",
+    "text": "Regulation: A Political Perspective (2024)\nPolitics of the Underdeveloped World (2023)\nAmerican Politics (2022)\nMoney in Politics (2021)"
+  },
+  {
+    "objectID": "teaching.html#teaching-assistant-uc-riverside",
+    "href": "teaching.html#teaching-assistant-uc-riverside",
+    "title": "Teaching",
+    "section": "Teaching Assistant, UC Riverside",
+    "text": "Teaching Assistant, UC Riverside\nDepartment of Political Science: American Politics, Comparative Politics, Elections and Political Participation, Global Politics, Political Ideologies, Politics of Mexico, Politics of the Underdeveloped World\nSchool of Public Policy: Intro to Public Policy, Politics and Public Policy, Policy Evaluation"
+  },
+  {
+    "objectID": "contact.html",
+    "href": "contact.html",
+    "title": "Contact",
+    "section": "",
+    "text": "The best way to reach me is via my personal email."
+  },
+  {
+    "objectID": "contact.html#email",
+    "href": "contact.html#email",
+    "title": "Contact",
+    "section": "Email",
+    "text": "Email\n\nalex.frederick.ross@gmail.com (preferred)\nalexander-frederick.ross.1@ulaval.ca (Université Laval)\naross005@ucr.edu (UC Riverside)"
+  },
+  {
+    "objectID": "contact.html#connect",
+    "href": "contact.html#connect",
+    "title": "Contact",
+    "section": "Connect",
+    "text": "Connect\n\nGoogle Scholar\nTwitter/X\nGitHub\nLinkedIn"
+  },
+  {
+    "objectID": "cv.html",
+    "href": "cv.html",
+    "title": "Curriculum Vitae",
+    "section": "",
+    "text": "This is my Academic CV. My professional resume is available upon request.\nDownload CV (PDF)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Alexander Ross",
+    "section": "",
+    "text": "Email\n  \n  \n    \n     CV\n  \n  \n    \n     Google Scholar\n  \n\n  \n  \nI was most recently a postdoctoral researcher at Université Laval, where I worked on the PASI immigrant integration panel study. I received my PhD in Political Science from UC Riverside in 2024, where my dissertation examined the politics of student loan debt. I also have a Master’s in Public Policy from the UC Riverside School of Public Policy, where my master’s project dealt with eviction rates and public transit access in low-income areas of Riverside County.\nMy research explores how personal debt impacts political attitudes in the American context, as well as immigration and immigrant political attitudes both in the American context and comparatively. Methodologically, my interests include text as data and survey design.\nBefore grad school, I served with AmeriCorps in South-Central Los Angeles and briefly taught English in Beijing. In my spare time, I read widely, write fiction, and run more slowly than I’d like."
+  },
+  {
+    "objectID": "index.html#research-interests",
+    "href": "index.html#research-interests",
+    "title": "Alexander Ross",
+    "section": "Research Interests",
+    "text": "Research Interests\n\nPersonal debt and political behavior (American)\nImmigration and immigrant political attitudes (American and comparative)\nPolitical behavior (comparative)\nInequality\nOnline political behavior\nText as data, social media data, and survey methodology"
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Alexander Ross",
+    "section": "Education",
+    "text": "Education\nPhD in Political Science | University of California, Riverside | 2024\nMaster of Public Policy | University of California, Riverside | 2017\nBA in Political Science | University of California, Riverside | 2013"
+  },
+  {
+    "objectID": "index.html#news",
+    "href": "index.html#news",
+    "title": "Alexander Ross",
+    "section": "News",
+    "text": "News\nCheck back for updates on recent publications, conference presentations, and other academic news."
   },
   {
     "objectID": "projects.html",
@@ -49,66 +119,10 @@
     "text": "Conference Presentations\nYelp Stars and Partisan Stripes: Evidence of Affective Polarization in Online Business Reviews With Adam Hobbs and Loren Collingwood Presented at MPSA 2026\n\nParticipating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs’ Use and Impacts With Valérie-Anne Mahéo and Thomas Gareau-Paquette Presented at CPSA 2025\n\nHousing Shocks and Redistributive Preferences With Adam Hobbs Presented at MPSA 2024 & APSA 2025\n\nOwed Gratitude? The Impact of Attempted Debt Cancelation on Attitudes and Behaviors Presented at APSA 2024\n\nDeserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors Presented at APSA 2023\n\nDebtors and Democracy: The Impact of Federal Student Loan Debt on Participation and Attitudes among Debtors Presented at MPSA 2023\n\nVoting and Proactive Social Norm Compliance With Daniel R. Biggers Presented at APSA 2023"
   },
   {
-    "objectID": "projects.html#teaching",
-    "href": "projects.html#teaching",
-    "title": "Research",
-    "section": "Teaching",
-    "text": "Teaching\n\nInstructor of Record, UC Riverside\n\nRegulation: A Political Perspective (2024)\nPolitics of the Underdeveloped World (2023)\nAmerican Politics (2022)\nMoney in Politics (2021)\n\n\n\nTeaching Assistant, UC Riverside\nDepartment of Political Science: American Politics, Comparative Politics, Elections and Political Participation, Global Politics, Political Ideologies, Politics of Mexico, Politics of the Underdeveloped World\nSchool of Public Policy: Intro to Public Policy, Politics and Public Policy, Policy Evaluation"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Alexander Ross",
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "Resume",
     "section": "",
-    "text": "Email\n  \n  \n    \n     CV\n  \n  \n    \n     Google Scholar\n  \n\n  \n  \nI was most recently a postdoctoral researcher at Université Laval, where I worked on the PASI immigrant integration panel study. I received my PhD in Political Science from UC Riverside in 2024, where my dissertation examined the politics of student loan debt. I also have a Master’s in Public Policy from the UC Riverside School of Public Policy, where my master’s project dealt with eviction rates and public transit access in low-income areas of Riverside County.\nMy research explores how personal debt impacts political attitudes in the American context, as well as immigration and immigrant political attitudes both in the American context and comparatively. Methodologically, my interests include text as data and survey design.\nBefore grad school, I served with AmeriCorps in South-Central Los Angeles and briefly taught English in Beijing. In my spare time, I read widely, write fiction, and run more slowly than I’d like."
-  },
-  {
-    "objectID": "index.html#research-interests",
-    "href": "index.html#research-interests",
-    "title": "Alexander Ross",
-    "section": "Research Interests",
-    "text": "Research Interests\n\nPersonal debt and political behavior (American)\nImmigration and immigrant political attitudes (American and comparative)\nPolitical behavior (comparative)\nInequality\nOnline political behavior\nText as data, social media data, and survey methodology"
-  },
-  {
-    "objectID": "index.html#education",
-    "href": "index.html#education",
-    "title": "Alexander Ross",
-    "section": "Education",
-    "text": "Education\nPhD in Political Science | University of California, Riverside | 2024\nMaster of Public Policy | University of California, Riverside | 2017\nBA in Political Science | University of California, Riverside | 2013"
-  },
-  {
-    "objectID": "index.html#news",
-    "href": "index.html#news",
-    "title": "Alexander Ross",
-    "section": "News",
-    "text": "News\nCheck back for updates on recent publications, conference presentations, and other academic news."
-  },
-  {
-    "objectID": "cv.html",
-    "href": "cv.html",
-    "title": "Curriculum Vitae",
-    "section": "",
-    "text": "This is my Academic CV. My professional resume is available upon request.\nDownload CV (PDF)"
-  },
-  {
-    "objectID": "contact.html",
-    "href": "contact.html",
-    "title": "Contact",
-    "section": "",
-    "text": "The best way to reach me is via my personal email."
-  },
-  {
-    "objectID": "contact.html#email",
-    "href": "contact.html#email",
-    "title": "Contact",
-    "section": "Email",
-    "text": "Email\n\nalex.frederick.ross@gmail.com (preferred)\nalexander-frederick.ross.1@ulaval.ca (Université Laval)\naross005@ucr.edu (UC Riverside)"
-  },
-  {
-    "objectID": "contact.html#connect",
-    "href": "contact.html#connect",
-    "title": "Contact",
-    "section": "Connect",
-    "text": "Connect\n\nGoogle Scholar\nTwitter/X\nGitHub\nLinkedIn"
+    "text": "Download Resume (PDF)"
   }
 ]
