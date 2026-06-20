@@ -66,7 +66,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
   - Online political behavior
   - Text as data, social media data, and survey methodology
 - **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
-- **Under review:** 4 papers (Deserving Debtors, Buying Love, Group Threat & Solidarity/Yelp, Home Sweet Home/FREI)
+- **Under review:** 4 papers (Deserving Debtors, Buying Love? How Government Benefits Shape Immigrant Political Attachment, Group Threat & Solidarity/Yelp, Home Sweet Home/FREI)
 - **Current project:** PASI (immigrant integration panel study, data from Université Laval postdoc)
 - **Working papers:** 5 papers listed with co-authors and conference presentations
 

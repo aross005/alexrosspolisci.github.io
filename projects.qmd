@@ -26,7 +26,7 @@ This is the first panel dataset on political attitudes composed exclusively of r
 
 ---
 
-**Buying Love**
+**Buying Love? How Government Benefits Shape Immigrant Political Attachment**
 
 ---
 
@@ -40,7 +40,38 @@ With Adam Hobbs
 
 ---
 
-## Working Papers & Conference Presentations
+## Working Papers
+
+**Participating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs' Use and Impacts**
+With Valérie-Anne Mahéo and Thomas Gareau-Paquette
+
+---
+
+**Owed Gratitude? The Impact of Attempted Debt Cancelation on Attitudes and Behaviors**
+
+---
+
+**Debtors and Democracy: The Impact of Federal Student Loan Debt on Participation and Attitudes among Debtors**
+
+---
+
+**Voting and Proactive Social Norm Compliance**
+With Daniel R. Biggers
+
+---
+
+**Dropbox Proximity and Voting Propensity**
+With Loren Collingwood and Benjamin Gonzalez O'Brien
+
+---
+
+## Conference Presentations
+
+**Yelp Stars and Partisan Stripes: Evidence of Affective Polarization in Online Business Reviews**
+With Adam Hobbs and Loren Collingwood
+*Forthcoming at MPSA 2026*
+
+---
 
 **Participating in Integration Activities and Participating in Quebec Society: A Study of Integration Programs' Use and Impacts**
 With Valérie-Anne Mahéo and Thomas Gareau-Paquette
@@ -48,8 +79,19 @@ With Valérie-Anne Mahéo and Thomas Gareau-Paquette
 
 ---
 
+**Housing Shocks and Redistributive Preferences**
+With Adam Hobbs
+*Presented at MPSA 2024 & APSA 2025*
+
+---
+
 **Owed Gratitude? The Impact of Attempted Debt Cancelation on Attitudes and Behaviors**
 *Presented at APSA 2024*
+
+---
+
+**Deserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors**
+*Presented at APSA 2023*
 
 ---
 
@@ -61,8 +103,3 @@ With Valérie-Anne Mahéo and Thomas Gareau-Paquette
 **Voting and Proactive Social Norm Compliance**
 With Daniel R. Biggers
 *Presented at APSA 2023*
-
----
-
-**Dropbox Proximity and Voting Propensity**
-With Loren Collingwood and Benjamin Gonzalez O'Brien
