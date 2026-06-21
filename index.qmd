@@ -24,7 +24,7 @@ about:
 
 I was most recently a postdoctoral researcher at Université Laval, where I worked on the PASI immigrant integration panel study. I received my PhD in Political Science from UC Riverside in 2024, where my dissertation examined the politics of student loan debt. I also have a Master's in Public Policy from the UC Riverside School of Public Policy, where my master's project dealt with eviction rates and public transit access in low-income areas of Riverside County.
 
-My research explores how personal debt impacts political attitudes in the American context, as well as immigration and immigrant political attitudes both in the American context and comparatively. Methodologically, my interests include text as data and survey design.
+My research explores how personal debt impacts political attitudes in the American context, as well as immigration and immigrant political attitudes both in the American context and comparatively. I also use naturalistic data from online platforms like Yelp and Google Reviews to study how political events shape everyday behavior. Methodologically, my interests include text as data, social media data, and survey design.
 
 Before grad school, I served with AmeriCorps in South-Central Los Angeles and briefly taught English in Beijing. In my spare time, I read widely, write fiction, and run more slowly than I'd like.
 
@@ -47,6 +47,6 @@ Before grad school, I served with AmeriCorps in South-Central Los Angeles and br
 
 **BA in Political Science** | University of California, Riverside | 2013
 
-## News
+<!-- ## News -->
 
-*Check back for updates on recent publications, conference presentations, and other academic news.*
+<!-- *Check back for updates on recent publications, conference presentations, and other academic news.* -->

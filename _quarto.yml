@@ -29,6 +29,8 @@ website:
     right:
       - icon: envelope
         href: mailto:alexander-frederick.ross.1@ulaval.ca
+      - icon: mortarboard
+        href: https://scholar.google.com/citations?user=n7m5UVcAAAAJ&hl=en
       - icon: twitter
         href: https://twitter.com/aross005
       - icon: github
