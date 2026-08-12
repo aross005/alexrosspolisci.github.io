@@ -28,6 +28,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 ├── cv.qmd               # Embeds CV PDF (academic)
 ├── resume.qmd           # Embeds resume PDF (unlisted, noindex)
 ├── projects.qmd         # Research & publications
+├── teaching.qmd         # Teaching experience (own navbar tab)
 ├── contact.qmd          # Contact info
 ├── custom.scss          # Theme styling (typography, layout - no color overrides)
 ├── custom.css           # Additional CSS
@@ -57,7 +58,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 ---
 
 ## Current Site Content
-- **Bio:** Was most recently a postdoctoral researcher at Université Laval (ended March 2026), working on PASI immigrant integration study. PhD from UC Riverside 2024 (dissertation on politics of student loan debt). MPP from UC Riverside School of Public Policy. AmeriCorps alum (South-Central LA), taught English in Beijing.
+- **Bio:** Currently on the job market. PhD from UC Riverside 2024 (dissertation on politics of student loan debt). Most recently postdoctoral researcher at Université Laval (ended March 2026), working on PASI immigrant integration study. MPP from UC Riverside School of Public Policy. Bio also mentions naturalistic data research (Yelp/Google Reviews). AmeriCorps alum (South-Central LA), taught English in Beijing. News section commented out (infrastructure kept).
 - **Research interests:**
   - Personal debt and political behavior (American)
   - Immigration and immigrant political attitudes (American and comparative)
@@ -67,8 +68,10 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
   - Text as data, social media data, and survey methodology
 - **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
 - **Under review:** 4 papers (Deserving Debtors, Buying Love? How Government Benefits Shape Immigrant Political Attachment, Group Threat & Solidarity/Yelp, Home Sweet Home/FREI)
-- **Current project:** PASI (immigrant integration panel study, data from Université Laval postdoc)
-- **Working papers:** 5 papers listed with co-authors and conference presentations
+- **Current projects:** Naturalistic data and political attitudes (Yelp/Google Reviews), PASI (immigrant integration panel study, data from Université Laval postdoc)
+- **Working papers:** 7 papers listed, including BLM Protests and Online Reviews of Black-Owned Businesses (with Hobbs, Onursal, and Garnett), In the Line of Fire (gun retailers/mass shootings, with Oklobdzija), and Rating the Reckoning (#MeToo/Kavanaugh, women-led businesses)
+- **Teaching:** Separate page; 4 courses as instructor of record, TA for Political Science and Public Policy at UC Riverside
+- **Grants:** 3 from UC Riverside + CSDC Conference Travel Grant (2025)
 
 ---
 
@@ -80,6 +83,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 | Update CV | Replace `files/Alex_CV.pdf` |
 | Update resume | Replace `files/Alex_Ross_Resume.pdf` |
 | Add publication/paper | `projects.qmd` |
+| Update teaching info | `teaching.qmd` |
 | Update contact info | `contact.qmd` |
 | Change site styling | `custom.scss` or `custom.css` |
 | Change nav/footer | `_quarto.yml` |
@@ -99,7 +103,7 @@ git commit -m "Description of changes"
 git push
 ```
 
-**Note:** `_quarto.yml` has a render list that only includes the main site pages (index, cv, resume, projects, contact). The Projects folder is excluded from rendering.
+**Note:** `_quarto.yml` has a render list that only includes the main site pages (index, cv, resume, projects, teaching, contact). The Projects folder is excluded from rendering.
 
 See `CHEAT_SHEET.md` for detailed instructions.
 

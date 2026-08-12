@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "WebFetch(domain:alexrosspolisci.com)",
-      "Bash(quarto render:*)",
-      "Bash(open:*)"
-    ]
-  }
-}

@@ -18,7 +18,11 @@ I am currently working on a series of projects that use naturalistic data from o
 
 **Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants** (with Adam Hobbs and Loren Collingwood) examines how partisan and racial attitudes manifest in online reviews of Mexican restaurants, using Yelp data to capture affective polarization in everyday consumer behavior. *Under review.*
 
-**BLM Protests and Online Reviews of Black-Owned Businesses** (with Adam Hobbs and Deren Onursal) investigates whether Black Lives Matter protests generate solidarity or backlash toward Black-owned businesses, using Yelp and Google Reviews data matched with protest event data from ACLED. We find that Black-owned businesses receive significantly higher ratings following nearby BLM protests, with effects that are temporally proximate and geographically local. *In progress.*
+**BLM Protests and Online Reviews of Black-Owned Businesses** (with Adam Hobbs, Deren Onursal, and Tre Garnett) investigates whether Black Lives Matter protests generate solidarity or backlash toward Black-owned businesses, using Yelp and Google Reviews data matched with protest event data from ACLED. We find that Black-owned businesses receive significantly higher ratings following nearby BLM protests, with effects that are temporally proximate and geographically local. *In progress.*
+
+**In the Line of Fire: Evidence of Political Shocks in Gun Retailer Online Consumer Behavior** (with Stan Oklobdzija) examines how mass shootings shape consumer evaluations of gun retailers, matching geocoded mass shooting data to Yelp and Google Reviews of gun shops. Gun shops receive significantly lower ratings following nearby shootings; effects are geographically concentrated, build over the first two months before fading, and reflect changed sentiment rather than changed review volume. *In progress.*
+
+**Rating the Reckoning: Gender-Salience Shocks and Online Reviews of Women-Led Businesses** uses Google Reviews of women-led businesses to study how national gender-salience shocks shape consumer behavior. The #MeToo movement produced a slow-building increase in ratings of women-led businesses, while the polarized fight over the Kavanaugh confirmation produced a penalty, suggesting that diffuse sympathetic mobilization generates consumer solidarity while two-sided partisan conflict generates net backlash. *In progress.*
 
 ### PASI (Programme d'accompagnement et de soutien à l'intégration)
 
@@ -66,7 +70,16 @@ With Daniel R. Biggers
 ---
 
 **BLM Protests and Online Reviews of Black-Owned Businesses: Evidence from Yelp and Google Reviews**
-With Adam Hobbs and Deren Onursal
+With Adam Hobbs, Deren Onursal, and Tre Garnett
+
+---
+
+**In the Line of Fire: Evidence of Political Shocks in Gun Retailer Online Consumer Behavior**
+With Stan Oklobdzija
+
+---
+
+**Rating the Reckoning: Gender-Salience Shocks and Online Reviews of Women-Led Businesses**
 
 ---
 
