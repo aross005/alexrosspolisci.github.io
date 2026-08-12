@@ -3,7 +3,7 @@
 ## Overview
 Personal academic website built with Quarto, deployed to GitHub Pages.
 
-## Status: LIVE (updated June 2026)
+## Status: LIVE (updated August 2026)
 
 **Live URL:** https://alexrosspolisci.com
 
@@ -128,6 +128,18 @@ The `website_helpers.Rmd` file contains R functions for updating the site. Open 
 ```r
 quick_cv_update("~/Downloads/My_New_CV.pdf")
 ```
+
+---
+
+## Change Log
+
+**2026-08-12**
+- Added Tre Garnett as co-author on the BLM Protests paper (CV + both mentions in `projects.qmd`).
+- Added two new in-progress naturalistic data papers to the CV (Working Papers) and `projects.qmd` (Current Projects blurbs + Working Papers list):
+  - *In the Line of Fire: Evidence of Political Shocks in Gun Retailer Online Consumer Behavior* (with Stan Oklobdzija)
+  - *Rating the Reckoning: Gender-Salience Shocks and Online Reviews of Women-Led Businesses* (solo)
+- Recompiled CV from `~/Desktop/Jobs_actual/Templates/Alex_CV.tex` (the live CV source), copied to `files/Alex_CV.pdf`, re-rendered site, pushed live.
+- Repo cleanup: index had all files staged as deleted from an earlier reset; resolved via `git add -A`. `.claude/settings.local.json` and `Screenshot*.png` untracked (now gitignored), files remain on disk.
 
 ---
 
