@@ -22,7 +22,13 @@ I am currently working on a series of projects that use naturalistic data from o
 
 **In the Line of Fire: Evidence of Political Shocks in Gun Retailer Online Consumer Behavior** (with Stan Oklobdzija) examines how mass shootings shape consumer evaluations of gun retailers, matching geocoded mass shooting data to Yelp and Google Reviews of gun shops. Gun shops receive significantly lower ratings following nearby shootings; effects are geographically concentrated, build over the first two months before fading, and reflect changed sentiment rather than changed review volume. *In progress.*
 
-**Rating the Reckoning: Gender-Salience Shocks and Online Reviews of Women-Led Businesses** uses Google Reviews of women-led businesses to study how national gender-salience shocks shape consumer behavior. The #MeToo movement produced a slow-building increase in ratings of women-led businesses, while the polarized fight over the Kavanaugh confirmation produced a penalty, suggesting that diffuse sympathetic mobilization generates consumer solidarity while two-sided partisan conflict generates net backlash. *In progress.*
+**Rating the Reckoning: Gender-Salience Shocks and Online Reviews of Women-Led Businesses** (with Adam Hobbs) uses Google Reviews of women-led businesses to study how national gender-salience shocks shape consumer behavior. The #MeToo movement produced a slow-building increase in ratings of women-led businesses, while the polarized fight over the Kavanaugh confirmation produced a penalty, suggesting that diffuse sympathetic mobilization generates consumer solidarity while two-sided partisan conflict generates net backlash. *In progress.*
+
+### Housing, Race, and Voting
+
+**Home is Where the... Immigration Attitudes Are?** (with Adam Hobbs) asks whether housing affordability shapes immigration attitudes, a connection Republican elites have increasingly drawn in public debate. Combining 2024 Cooperative Election Study data with ZIP-code-level affordability measures from Zillow and the Census, we find no evidence that local housing conditions directly predict immigration attitudes. A pre-registered survey experiment (n = 1,421) shows that information explicitly linking housing costs to immigration, including an elite cue from J.D. Vance, increases anti-immigration attitudes, with policy preferences shifting most among non-partisans. *In progress.*
+
+**Race, Party, or Both? Racially Polarized Voting After Callais** (with Loren Collingwood) responds to the Supreme Court's 2026 decision in *Louisiana v. Callais*, which requires Section 2 Voting Rights Act plaintiffs to show that racially polarized voting cannot be explained by partisanship. Because standard ecological inference methods cannot accommodate partisan covariates, we propose OLS ecological regression with precinct-level party registration controls and first differences, applied across 35 statewide contests in California, Florida, and North Carolina (2014-2024). Hispanic and Black voter concentration continue to predict support for minority-preferred candidates after controlling for party registration, including in same-party (Democrat-vs-Democrat) general elections where partisanship cannot explain vote choice. *In progress.*
 
 ### PASI (Programme d'accompagnement et de soutien à l'intégration)
 
@@ -80,6 +86,17 @@ With Stan Oklobdzija
 ---
 
 **Rating the Reckoning: Gender-Salience Shocks and Online Reviews of Women-Led Businesses**
+With Adam Hobbs
+
+---
+
+**Home is Where the... Immigration Attitudes Are?**
+With Adam Hobbs
+
+---
+
+**Race, Party, or Both? Racially Polarized Voting After Callais**
+With Loren Collingwood
 
 ---
 

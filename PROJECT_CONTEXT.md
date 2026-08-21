@@ -69,7 +69,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 - **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
 - **Under review:** 4 papers (Deserving Debtors, Buying Love? How Government Benefits Shape Immigrant Political Attachment, Group Threat & Solidarity/Yelp, Home Sweet Home/FREI)
 - **Current projects:** Naturalistic data and political attitudes (Yelp/Google Reviews), PASI (immigrant integration panel study, data from Université Laval postdoc)
-- **Working papers:** 7 papers listed, including BLM Protests and Online Reviews of Black-Owned Businesses (with Hobbs, Onursal, and Garnett), In the Line of Fire (gun retailers/mass shootings, with Oklobdzija), and Rating the Reckoning (#MeToo/Kavanaugh, women-led businesses)
+- **Working papers:** 9 papers listed, including BLM Protests and Online Reviews of Black-Owned Businesses (with Hobbs, Onursal, and Garnett), In the Line of Fire (gun retailers/mass shootings, with Oklobdzija), Rating the Reckoning (#MeToo/Kavanaugh, women-led businesses, with Hobbs), Home is Where the... Immigration Attitudes Are? (housing affordability and immigration attitudes, with Hobbs), and Race, Party, or Both? (racially polarized voting after Callais, with Collingwood)
 - **Teaching:** Separate page; 4 courses as instructor of record, TA for Political Science and Public Policy at UC Riverside
 - **Grants:** 3 from UC Riverside + CSDC Conference Travel Grant (2025)
 
@@ -80,7 +80,7 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
 | Task | File to Edit |
 |------|--------------|
 | Update bio/intro | `index.qmd` |
-| Update CV | Replace `files/Alex_CV.pdf` |
+| Update CV | Edit `~/Desktop/Jobs_actual/templates_actual/Alex_CV.tex` (live CV source), compile with pdflatex, copy PDF to `files/Alex_CV.pdf` |
 | Update resume | Replace `files/Alex_Ross_Resume.pdf` |
 | Add publication/paper | `projects.qmd` |
 | Update teaching info | `teaching.qmd` |
@@ -132,6 +132,14 @@ quick_cv_update("~/Downloads/My_New_CV.pdf")
 ---
 
 ## Change Log
+
+**2026-08-20**
+- CV source folder was renamed: the live CV source is now `~/Desktop/Jobs_actual/templates_actual/Alex_CV.tex` (was `Templates/`).
+- Added Adam Hobbs as co-author on *Rating the Reckoning* (CV + both mentions in `projects.qmd`).
+- Added two new in-progress papers to the CV (Working Papers) and `projects.qmd` (new "Housing, Race, and Voting" subsection under Current Projects + Working Papers list):
+  - *Home is Where the... Immigration Attitudes Are?* (with Adam Hobbs; housing affordability and immigration attitudes, CES + pre-registered survey experiment)
+  - *Race, Party, or Both? Racially Polarized Voting After Callais* (with Loren Collingwood; RPV with party registration controls across CA/FL/NC)
+- Recompiled CV, copied to `files/Alex_CV.pdf`, re-rendered site, pushed live.
 
 **2026-08-12**
 - Added Tre Garnett as co-author on the BLM Protests paper (CV + both mentions in `projects.qmd`).
