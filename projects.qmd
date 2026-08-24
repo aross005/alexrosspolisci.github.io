@@ -16,7 +16,7 @@ With Daniel R. Biggers. *Electoral Studies*, 2023.
 
 I am currently working on a series of projects that use naturalistic data from online platforms, particularly Yelp and Google Reviews, to capture political attitudes and behaviors as they occur organically, outside of traditional survey settings.
 
-**Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants** (with Adam Hobbs and Loren Collingwood) examines how partisan and racial attitudes manifest in online reviews of Mexican restaurants, using Yelp data to capture affective polarization in everyday consumer behavior. *Under review.*
+**Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants** (with Adam Hobbs and Loren Collingwood) examines how partisan and racial attitudes manifest in online reviews of Mexican restaurants, using Yelp data to capture affective polarization in everyday consumer behavior. *Revise and resubmit at Public Opinion Quarterly.*
 
 **BLM Protests and Online Reviews of Black-Owned Businesses** (with Adam Hobbs, Deren Onursal, and Tre Garnett) investigates whether Black Lives Matter protests generate solidarity or backlash toward Black-owned businesses, using Yelp and Google Reviews data matched with protest event data from ACLED. We find that Black-owned businesses receive significantly higher ratings following nearby BLM protests, with effects that are temporally proximate and geographically local. *In progress.*
 
@@ -40,6 +40,14 @@ This is the first panel dataset on political attitudes composed exclusively of r
 
 ---
 
+## Revise and Resubmit
+
+**Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants**
+With Adam Hobbs and Loren Collingwood
+*Revise and resubmit at Public Opinion Quarterly*
+
+---
+
 ## Under Review
 
 **Deserving Debtors? The Determinants of Attitudes Toward Federal Student Loan Debtors**
@@ -47,11 +55,6 @@ This is the first panel dataset on political attitudes composed exclusively of r
 ---
 
 **Buying Love? How Government Benefits Shape Immigrant Political Attachment**
-
----
-
-**Group Threat and Solidarity: Evidence from Yelp Reviews of Mexican Restaurants**
-With Adam Hobbs and Loren Collingwood
 
 ---
 

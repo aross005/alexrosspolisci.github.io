@@ -67,7 +67,8 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
   - Online political behavior
   - Text as data, social media data, and survey methodology
 - **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
-- **Under review:** 4 papers (Deserving Debtors, Buying Love? How Government Benefits Shape Immigrant Political Attachment, Group Threat & Solidarity/Yelp, Home Sweet Home/FREI)
+- **Revise and resubmit:** Group Threat & Solidarity (Yelp/Mexican restaurants, with Hobbs and Collingwood), R&R at Public Opinion Quarterly
+- **Under review:** 3 papers (Deserving Debtors, Buying Love? How Government Benefits Shape Immigrant Political Attachment, Home Sweet Home/FREI)
 - **Current projects:** Naturalistic data and political attitudes (Yelp/Google Reviews), PASI (immigrant integration panel study, data from Université Laval postdoc)
 - **Working papers:** 9 papers listed, including BLM Protests and Online Reviews of Black-Owned Businesses (with Hobbs, Onursal, and Garnett), In the Line of Fire (gun retailers/mass shootings, with Oklobdzija), Rating the Reckoning (#MeToo/Kavanaugh, women-led businesses, with Hobbs), Home is Where the... Immigration Attitudes Are? (housing affordability and immigration attitudes, with Hobbs), and Race, Party, or Both? (racially polarized voting after Callais, with Collingwood)
 - **Teaching:** Separate page; 4 courses as instructor of record, TA for Political Science and Public Policy at UC Riverside
@@ -132,6 +133,9 @@ quick_cv_update("~/Downloads/My_New_CV.pdf")
 ---
 
 ## Change Log
+
+**2026-08-24**
+- Moved *Group Threat and Solidarity* (with Hobbs and Collingwood) from Under Review to a new "Revise and Resubmit" section (R&R at *Public Opinion Quarterly*) on the CV and in `projects.qmd`; updated its Current Projects blurb status. Recompiled CV, re-rendered, pushed.
 
 **2026-08-20**
 - CV source folder was renamed: the live CV source is now `~/Desktop/Jobs_actual/templates_actual/Alex_CV.tex` (was `Templates/`).
