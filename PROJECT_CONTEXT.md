@@ -134,6 +134,9 @@ quick_cv_update("~/Downloads/My_New_CV.pdf")
 
 ## Change Log
 
+**2026-08-24 (later)**
+- Reorganized Current Projects on `projects.qmd`: split "Housing, Race, and Voting" into a "Housing" subsection (through-line intro + both Hobbs housing papers, adding a blurb for *Home Sweet Home?*/FREI, under review) and a "Voting Rights" subsection (*Race, Party, or Both?* with Collingwood).
+
 **2026-08-24**
 - Moved *Group Threat and Solidarity* (with Hobbs and Collingwood) from Under Review to a new "Revise and Resubmit" section (R&R at *Public Opinion Quarterly*) on the CV and in `projects.qmd`; updated its Current Projects blurb status. Recompiled CV, re-rendered, pushed.
 
