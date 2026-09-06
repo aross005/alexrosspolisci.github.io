@@ -68,9 +68,9 @@ Personal academic website built with Quarto, deployed to GitHub Pages.
   - Text as data, social media data, and survey methodology
 - **Publication:** "Strategic Considerations and Support for Direct Democracy" in *Electoral Studies*
 - **Revise and resubmit:** Group Threat & Solidarity (Yelp/Mexican restaurants, with Hobbs and Collingwood), R&R at Public Opinion Quarterly
-- **Under review:** 3 papers (Deserving Debtors, Buying Love? How Government Benefits Shape Immigrant Political Attachment, Home Sweet Home/FREI)
+- **Under review:** 4 papers (Deserving Debtors, Buying Love? How Government Benefits Shape Immigrant Political Attachment, Home Sweet Home/FREI, Home is Where the... Immigration Attitudes Are?)
 - **Current projects:** Naturalistic data and political attitudes (Yelp/Google Reviews), PASI (immigrant integration panel study, data from Université Laval postdoc)
-- **Working papers:** 9 papers listed, including BLM Protests and Online Reviews of Black-Owned Businesses (with Hobbs, Onursal, and Garnett), In the Line of Fire (gun retailers/mass shootings, with Oklobdzija), Rating the Reckoning (#MeToo/Kavanaugh, women-led businesses, with Hobbs), Home is Where the... Immigration Attitudes Are? (housing affordability and immigration attitudes, with Hobbs), and Race, Party, or Both? (racially polarized voting after Callais, with Collingwood)
+- **Working papers:** 9 papers listed, including Enforcement on the Ground (ICE detentions x Yelp/Google reviews of Mexican restaurants, solo, source project at `~/Desktop/ICE project`), BLM Protests and Online Reviews of Black-Owned Businesses (with Hobbs, Onursal, and Garnett), In the Line of Fire (gun retailers/mass shootings, with Oklobdzija), Rating the Reckoning (#MeToo/Kavanaugh, women-led businesses, with Hobbs), and Race, Party, or Both? (racially polarized voting after Callais, with Collingwood)
 - **Teaching:** Separate page; 4 courses as instructor of record, TA for Political Science and Public Policy at UC Riverside
 - **Grants:** 3 from UC Riverside + CSDC Conference Travel Grant (2025)
 
@@ -133,6 +133,10 @@ quick_cv_update("~/Downloads/My_New_CV.pdf")
 ---
 
 ## Change Log
+
+**2026-09-06**
+- Added the ICE detentions project to the site and CV as *Enforcement on the Ground: ICE Detentions and Online Reviews of Mexican Restaurants* (working title assigned for the listing; no coauthors listed). Current Projects blurb under Naturalistic Data describes the pipeline (DDP FOIA detention records FY12-23, facility geocoding, Yelp + Google AZ review panels, reviewer-composition and sentiment outcomes) without claiming findings, since results are still exploratory. Added to Working Papers on both.
+- Moved *Home is Where the... Immigration Attitudes Are?* (with Hobbs) from Working Papers to Under Review on the CV and `projects.qmd`; updated its blurb status and the Housing intro. Recompiled CV, re-rendered, pushed.
 
 **2026-08-24 (later)**
 - Reorganized Current Projects on `projects.qmd`: split "Housing, Race, and Voting" into a "Housing" subsection (through-line intro + both Hobbs housing papers, adding a blurb for *Home Sweet Home?*/FREI, under review) and a "Voting Rights" subsection (*Race, Party, or Both?* with Collingwood).
