@@ -44,7 +44,7 @@ With Adam Hobbs, I am working on a pair of papers examining how housing markets 
 
 ### Voting Rights
 
-**Race, Party, or Both? Racially Polarized Voting After Callais** (with Loren Collingwood) responds to the Supreme Court's 2026 decision in *Louisiana v. Callais*, which requires Section 2 Voting Rights Act plaintiffs to show that racially polarized voting cannot be explained by partisanship. Because standard ecological inference methods cannot accommodate partisan covariates, we propose OLS ecological regression with precinct-level party registration controls and first differences, applied across 35 statewide contests in California, Florida, and North Carolina (2014-2024). Hispanic and Black voter concentration continue to predict support for minority-preferred candidates after controlling for party registration, including in same-party (Democrat-vs-Democrat) general elections where partisanship cannot explain vote choice. *In progress.*
+**Race, Party, or Both? Racially Polarized Voting After Callais** (with Loren Collingwood, Nazita Lajevardi, and Hannah Walker) responds to the Supreme Court's 2026 decision in *Louisiana v. Callais*, which requires Section 2 Voting Rights Act plaintiffs to show that racially polarized voting cannot be explained by partisanship. Because standard ecological inference methods cannot accommodate partisan covariates, we propose OLS ecological regression with precinct-level party registration controls and first differences, applied across 35 statewide contests in California, Florida, and North Carolina (2014-2024). Hispanic and Black voter concentration continue to predict support for minority-preferred candidates after controlling for party registration, including in same-party (Democrat-vs-Democrat) general elections where partisanship cannot explain vote choice. *In progress.*
 
 ### PASI (Programme d'accompagnement et de soutien à l'intégration)
 
@@ -111,7 +111,7 @@ With Adam Hobbs
 ---
 
 **Race, Party, or Both? Racially Polarized Voting After Callais**
-With Loren Collingwood
+With Loren Collingwood, Nazita Lajevardi, and Hannah Walker
 
 ---
 
